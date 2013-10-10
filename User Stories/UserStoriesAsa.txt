@@ -1,0 +1,6 @@
+As a <type of user>, I want <some goal> so that <some reason>. 
+
+As a student, I want to be able to see the changes on It's learning.
+
+As a student, I want to be notified about changes on It's learning.
+

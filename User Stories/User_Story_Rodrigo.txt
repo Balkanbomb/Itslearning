@@ -1,0 +1,3 @@
+As a user I would like to be able to change the colour coding of my courses, so I can clearly recognize them while I use the app in the bus.
+
+As a user I would like an option to filter the bulletins in the It's Learning tab, because I don't care about my App Development course.

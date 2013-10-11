@@ -1,0 +1,46 @@
+Syntax:
+As a <type of user>, I want <some goal> so that <some reason>. 
+
+
+
+
+
+
+* See the changes on Its Learning
+As a student, I want to be able to see the changes on It's learning.
+
+* Be notified about changes
+As a student, I want to be notified about changes on It's learning.
+
+* Be able to change the color of courses
+Missing
+
+* Filter the results
+Missing
+
+* Add Courses to the App
+As a student Anna has started attending a new course. In order to get updates from It's learning directly in her phone which she carries with her all the time, she must add it to the app. This is easily done in the global settings for the MaH app, accessed by pressing the settings icon in the toolbar.
+
+* Decide the amount of notifications received
+As a student Anna notices that all of her classmates exercises that are turned in are published in the Latest Changes feed. This annoys Anna because each time a student turns in a paper Anna gets a notification on her phone. 
+
+* See the Deadlines of exercises
+As a student I want to plan my time as effective as possible. For this I need to know tasks and their deadlines and see that information in my schedule or calendar.
+
+* No more logging in into IL
+As student I want to have easy access to services I use and continuous logging in is very annoying. It takes lot of time which doesn't provide me any useful information.
+
+* Access IL and/or the rest of the functions from the app
+As a student, I want to be able to access It's learning from the app on a mobile device.
+
+* Create a post on IL directly from the app (teacher scenario)
+As a teacher, I want to be able to create a post on It's learning directly from the app on a mobile device.
+
+* Choose the amount of Bulletins shown
+David, a student is enrolled in multiple courses here in MAH. So, at any given point, he'd recieve updates from all his different courses on ITSL. Preferably, he'd like to limit the number of bulletins he has per page, so that he doesn't get overwhelmed with the number of updates.
+
+
+
+
+
+

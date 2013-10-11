@@ -1,0 +1,5 @@
+As a <type of user>, I want <some goal> so that <some reason>. 
+
+As a student, I want to be able to access It's learning from the app on a mobile device.
+
+As a teacher, I want to be able to create a post on It's learning directly from the app on a mobile device.

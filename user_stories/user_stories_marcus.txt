@@ -1,0 +1,8 @@
+
+Adding Courses to the App
+-------------------------
+Anna has started attending a new course. In order to get updates from It's learning directly in her phone which she carries with her all the time, she must add it to the app. This is easily done in the global settings for the MaH app, accessed by pressing the settings icon in the toolbar.
+
+Decide the amount of notifications received
+-------------------------------------------
+In Annas course, notices of all exercises that are turned in are published in the Latest Changes feed. This annoys Anna because each time a student turns in a paper Anna gets a notification on her phone. Turning off the notifications is simple though, either she change what to be notified about in the global app settings, or under the ITSL tab, by scrolling upwards past the most recent article, showing the settings for her news feed; including color, filter and notification options.

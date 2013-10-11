@@ -1,0 +1,4 @@
+David, a student is enrolled in multiple courses here in MAH. 
+So, at any given point, he'd recieve updates from  all his different courses on ITSL. 
+Preferably, he'd like to limit the number of bulletins he has per page, so that he doesn't 
+get over whelmed with the number of updates.

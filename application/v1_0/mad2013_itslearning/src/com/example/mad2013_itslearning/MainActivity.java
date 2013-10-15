@@ -2,6 +2,7 @@ package com.example.mad2013_itslearning;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 
 public class MainActivity extends Activity {

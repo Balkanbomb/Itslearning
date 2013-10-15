@@ -4,5 +4,6 @@
     <string name="app_name">mad2013_itslearning</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_rss_test">MainActivity</string>
 
 </resources>

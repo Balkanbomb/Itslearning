@@ -5,7 +5,14 @@ import android.graphics.Color;
 public class Course {
 	private Color color;
 	private String id;
+	private Boolean filter;
 	
+	public Boolean getFilter() {
+		return filter;
+	}
+	public void setFilter(Boolean filter) {
+		this.filter = filter;
+	}
 	public Color getColor() {
 		return color;
 	}

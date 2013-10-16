@@ -3,7 +3,7 @@ package com.example.mad2013_itslearning;
 import java.net.URL;
 import java.util.Date;
 
-public class Article {
+public class Article implements Comparable<Article>{
 	private String title;
 	private URL link;
 	private String description;
@@ -39,5 +39,9 @@ public class Article {
 	}
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+	@Override
+	public int compareTo(Article another) {
+		return this.date.compareTo(another.date);
 	}
 }

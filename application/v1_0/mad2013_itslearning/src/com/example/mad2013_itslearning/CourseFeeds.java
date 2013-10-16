@@ -1,22 +1,29 @@
 package com.example.mad2013_itslearning;
 
-import java.util.Calendar;
 
 public class CourseFeeds {
-	private int days;
+
 	private Feed changesFeed;
 	private Feed buletinFeed;
-	private Calendar lastDisplayDate;
+
 	
-
-	public void setDays(int days) {
-		this.days = days;
+	public Feed getChangesFeed() {
+		return changesFeed;
 	}
 
 
-	public Calendar setLastDisplayDate(int days){
-		Calendar currentDate = Calendar.getInstance();
-		lastDisplayDate.setTimeInMillis(currentDate.getTimeInMillis()-(days*24*60*60*1000));
-		return lastDisplayDate;
+	public void setChangesFeed(Feed changesFeed) {
+		this.changesFeed = changesFeed;
 	}
+
+
+	public Feed getBuletinFeed() {
+		return buletinFeed;
+	}
+
+
+	public void setBuletinFeed(Feed buletinFeed) {
+		this.buletinFeed = buletinFeed;
+	}
+
 }

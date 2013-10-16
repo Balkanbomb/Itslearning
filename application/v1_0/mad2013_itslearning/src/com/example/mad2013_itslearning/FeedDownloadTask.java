@@ -1,28 +1,28 @@
 package com.example.mad2013_itslearning;
 
-import java.util.LinkedList;
-import java.util.List;
 import org.mcsoxford.rss.RSSFeed;
-import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.content.Context;
 
-public class FeedDownloadTask extends AsyncTask<String, Void, List<RSSItem>> {
+public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed> {
 
 	private final String TAG = "RSSTEST";
 	private FeedCompleteListener contextListener;
-
+	private Exception exception;
+		
 	/* 
 	 * the calling class must implement this method
 	 */
 	public interface FeedCompleteListener {
-		public void onFeedComplete(List<RSSItem> list);
+		public void onFeedComplete(RSSFeed feed);
 	}
 
 	public FeedDownloadTask(Context context) {
 		super();
+		
+		this.exception = null;
 		
 		/*
 		 * in order to handle callbacks, we require that the calling class
@@ -37,30 +37,42 @@ public class FeedDownloadTask extends AsyncTask<String, Void, List<RSSItem>> {
 		}
 	}
 
-	protected List<RSSItem> doInBackground(String... url) {
-		List<RSSItem> list = new LinkedList<RSSItem>();
+	protected RSSFeed doInBackground(String... feedUrl) {
 		RSSReader reader = new RSSReader();
-		String uri = url[0];
+		RSSFeed feed = null;
+		String url = feedUrl[0];
 
 		try {
-			RSSFeed feed = reader.load(uri);
-			list.addAll(feed.getItems());
+			// to get the feed
+			feed = reader.load(url);
 		} catch (Exception e) {
-			Log.e(TAG, e.toString());
+			// if that fails, save the exception
+			exception = e;
 		} finally {
-			// release resources
+			// always release resources
 			reader.close();
 		}
 
-		return list;
+		// might be null
+		return feed; 
 	}
 
-	protected void onPostExecute(List<RSSItem> list) {
+	protected void onPostExecute(RSSFeed feed) {
 		/*
-		 * pass the results back to the caller
+		 * pass the result back to the caller
 		 * 
 		 */
-		contextListener.onFeedComplete(list);
+		contextListener.onFeedComplete(feed);
+	}
+
+	public boolean hasException()
+	{
+		return exception != null;
+	}
+	
+	public Exception getException()
+	{
+		return exception;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.example.mad2013_itslearning;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
@@ -19,8 +20,13 @@ public class Article implements Comparable<Article>{
 	public URL getLink() {
 		return link;
 	}
-	public void setLink(URL link) {
-		this.link = link;
+	public void setLink(String link) {
+		try {
+			this.link = new URL(link);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public String getDescription() {
 		return description;
@@ -43,5 +49,9 @@ public class Article implements Comparable<Article>{
 	@Override
 	public int compareTo(Article another) {
 		return this.date.compareTo(another.date);
+	}
+	
+	public String toString() {
+		return title + "\n-----------\n" + date.toString() + "\n-----------\n" + description;
 	}
 }

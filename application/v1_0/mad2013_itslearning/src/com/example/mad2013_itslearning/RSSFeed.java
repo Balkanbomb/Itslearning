@@ -10,7 +10,6 @@ public abstract class Feed {
 	private URL rssLink;
 	private Boolean notify;
 	private ArrayList<Article> articleList;
-	private Course course;
 	
 	
 	public Boolean getNotify() {
@@ -34,9 +33,9 @@ public abstract class Feed {
 	}
 
 	
-	public ArrayList<Article> getArticleList(Calendar lastDisplayDate) {
+	public ArrayList<Article> getArticleList(Calendar lastDisplayDate, Boolean filter) {
 		ArrayList<Article> articleListDisplayed = new ArrayList<Article>();
-		if (course.getFilter()){
+		if (filter){
 			int length=articleList.size();
 			for (int i=0;i<length;i++){
 				if(articleList.get(i).getDate().after(lastDisplayDate.getTime())){

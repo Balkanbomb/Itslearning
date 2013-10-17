@@ -6,6 +6,27 @@ public class Course {
 	private Color color;
 	private String id;
 	private Boolean filter;
+	private Feed changesFeed;
+	private Feed buletinFeed;
+	
+	public Feed getChangesFeed() {
+		return changesFeed;
+	}
+
+
+	public void setChangesFeed(Feed changesFeed) {
+		this.changesFeed = changesFeed;
+	}
+
+
+	public Feed getBuletinFeed() {
+		return buletinFeed;
+	}
+
+
+	public void setBuletinFeed(Feed buletinFeed) {
+		this.buletinFeed = buletinFeed;
+	}
 	
 	public Boolean getFilter() {
 		return filter;

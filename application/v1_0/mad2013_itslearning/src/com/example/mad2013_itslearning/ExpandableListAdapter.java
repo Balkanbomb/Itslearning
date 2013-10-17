@@ -15,35 +15,33 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     private Context _context;
     private List<Article> _listDataHeader; // header titles
-    
+   
     // child data in format of header title, child title
-    private HashMap<Article, String> _listDataChild;
+    // private HashMap<Article, String> _listDataChild;
     
     boolean showHeaderText = true;
- 
-    public ExpandableListAdapter(Context context, List<Article> listDataHeader,
-            HashMap<Article, String> listChildData) {
+
+    public ExpandableListAdapter(Context context, List<Article> listDataHeader) {
         this._context = context;
         this._listDataHeader = listDataHeader;
-        this._listDataChild = listChildData;
     }
- 
+
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-   
-          return this._listDataChild.get(this._listDataHeader.get(groupPosition));
+          return this._listDataHeader.get(groupPosition); 
+          //this._listDataChild.get(this._listDataHeader.get(groupPosition));
     }
  
     @Override
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
- 
+    
     @Override
     public View getChildView(int groupPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
  
-        final String childText = (String) getChild(groupPosition, childPosition);
+        //final String childText = (String) getChild(groupPosition, childPosition);
  
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -54,7 +52,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
  
-        txtListChild.setText(childText);
+        txtListChild.setText(this._listDataHeader.get(groupPosition).getArticleText());
+
         return convertView;
     }
     

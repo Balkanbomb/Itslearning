@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mcsoxford.rss.RSSItem;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
@@ -41,7 +43,8 @@ public class MainActivity extends Activity {
         // preparing list data
         prepareListData();
  
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+//        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        listAdapter = new ExpandableListAdapter(this, listDataHeader);
          
         // setting list adapter
         expListView.setAdapter(listAdapter);
@@ -114,15 +117,15 @@ public class MainActivity extends Activity {
      */
     private void prepareListData() {
         listDataHeader = new ArrayList<Article>();
-        listDataChild = new HashMap<Article, String>();
+//        listDataChild = new HashMap<Article, String>();
  
         // Adding child data
-        
+
         listDataHeader.add(new Article("New", "2013-10-15 10.30", "For this we will need your User stories and one or more of them will be put into the first sprint.", "330A"));
         listDataHeader.add(new Article("Not so new", "2013-10-14 10.30", "We will need your User stories and one or more of them will be put into the first sprint.", "320B"));
         listDataHeader.add(new Article("Old", "2013-10-13 10.30", "For this we will need your User stories.", "330A"));
         listDataHeader.add(new Article("Oldest", "2013-10-12 10.30", "For this we will need your User stories.", "330A"));
-        
+/*        
         // Adding child data
         String top250;
         top250 = "For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.";
@@ -139,5 +142,6 @@ public class MainActivity extends Activity {
         listDataChild.put(listDataHeader.get(1), nowShowing);
         listDataChild.put(listDataHeader.get(2), comingSoon);
         listDataChild.put(listDataHeader.get(3), comingSoon);
+ */
     }
 }

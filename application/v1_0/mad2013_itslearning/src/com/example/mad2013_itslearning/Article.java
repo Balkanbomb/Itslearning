@@ -8,6 +8,10 @@ public class Article implements Comparable<Article> {
 	private String articleCourseCode;
 	private RSSItem rssItem;
 	private boolean textVisible;
+
+	String articleHeader;
+	String articleDate;
+	String articleText;
 	
 	public Article(RSSItem item) {
 		super();
@@ -15,21 +19,41 @@ public class Article implements Comparable<Article> {
 		this.textVisible = true;
 	}
 	
+	public Article(String articleHeader, String articleDate, String articleText, String courseCode) {
+		super();
+		this.articleHeader = articleHeader;
+		this.articleDate = articleDate;
+		this.articleText = articleText;
+		this.articleCourseCode = courseCode;
+		this.textVisible = true;
+		this.rssItem = null;
+	}
+
 	@Override
 	public int compareTo(Article another) {
-		return this.rssItem.getPubDate().compareTo(another.getArticleDate());
+		//return this.rssItem.getPubDate().compareTo(another.getArticleDate());
+		return 0;
 	}
 
 	public String getArticleHeader() {
-		return this.rssItem.getTitle();
+		if (this.rssItem == null)
+			return this.articleHeader;
+		else
+			return this.rssItem.getTitle();
 	}
 	
-	public Date getArticleDate() {
-		return this.rssItem.getPubDate();
+	public String getArticleDate() {
+		if (this.rssItem == null)
+			return this.articleDate;
+		else
+			return this.rssItem.getPubDate().toString();
 	}
 
 	public String getArticleText() {
-		return android.text.Html.fromHtml(this.rssItem.getDescription()).toString();
+		if (this.rssItem == null)
+			return this.articleText;
+		else
+			return android.text.Html.fromHtml(this.rssItem.getDescription()).toString();
 	}
 	
 	public boolean isTextVisible() {

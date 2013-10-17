@@ -3,13 +3,11 @@ package com.example.mad2013_itslearning;
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSReader;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.content.Context;
 
 public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed> {
 
 	private final String TAG = "RSSTEST";
-	private FeedCompleteListener contextListener;
+	private FeedCompleteListener callbackHandler;
 	private Exception exception;
 		
 	/* 
@@ -19,7 +17,7 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed> {
 		public void onFeedComplete(RSSFeed feed);
 	}
 
-	public FeedDownloadTask(Context context) {
+	public FeedDownloadTask(FeedCompleteListener callbackHandler) {
 		super();
 		
 		this.exception = null;
@@ -30,9 +28,9 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed> {
 		 * Exception is thrown
 		 */
 		try {
-			this.contextListener = (FeedCompleteListener) context;
+			this.callbackHandler = (FeedCompleteListener) callbackHandler;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(context.toString()
+			throw new ClassCastException(callbackHandler.toString()
 					+ " must implement FeedCompleteListener");
 		}
 	}
@@ -43,17 +41,26 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed> {
 		String url = feedUrl[0];
 
 		try {
-			// to get the feed
+			/* 
+			 * get the feed
+			 */
 			feed = reader.load(url);
 		} catch (Exception e) {
-			// if that fails, save the exception
+			/*
+			 * if that fails, save the exception
+			 */
 			exception = e;
 		} finally {
-			// always release resources
+			/*
+			 * always release resources
+			 */
+			
 			reader.close();
 		}
 
-		// might be null
+		/* 
+		 * might be null
+		 */
 		return feed; 
 	}
 
@@ -62,7 +69,7 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed> {
 		 * pass the result back to the caller
 		 * 
 		 */
-		contextListener.onFeedComplete(feed);
+		callbackHandler.onFeedComplete(feed);
 	}
 
 	public boolean hasException()

@@ -97,7 +97,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         
         TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
         	
-        lblListHeaderDate.setText(headerTitle.getArticleDate());
+        lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
         
         TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
         

@@ -17,7 +17,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<Article> _listDataHeader; // header titles
     
     // child data in format of header title, child title
-    private HashMap<Article, List<String>> _listDataChild;
+    private HashMap<Article, String> _listDataChild;
     
     boolean showHeaderText = true;
  
@@ -30,8 +30,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+        return this._listDataChild.get(this._listDataHeader.get(groupPosition));
     }
  
     @Override

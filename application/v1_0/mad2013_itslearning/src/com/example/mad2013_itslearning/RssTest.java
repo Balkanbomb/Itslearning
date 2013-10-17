@@ -19,7 +19,7 @@ public class RssTest extends Activity implements
 	private final String TAG = "RSSTEST";
 	private final String url = "https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE";
 	private FeedDownloadTask downloadTask;
-	private long time1, time2, time3;
+	private long time1, time2, time3, time4;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class RssTest extends Activity implements
 				if (count++ > 100)
 					break;
 			}
+			time3 = new Date().getTime() - time1;
 
 			// put the artilelist in a listview, just for show
 			try {
@@ -69,11 +70,11 @@ public class RssTest extends Activity implements
 				Log.e(TAG, e.toString());
 			}
 
-			time3 = new Date().getTime() - time1;
+			time4 = new Date().getTime() - time1;
 			
 		}
 		
-		Log.e(TAG, "times: " + String.format("1: %d ms | 2: %d ms", time2, time3));
+		Log.e(TAG, "times: " + String.format("rss: %d ms | articles: %d ms | adapter: %d ms", time2, time3, time4));
 	}
 
 	//@Override

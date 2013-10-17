@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<Article> listDataHeader;
-    HashMap<Article, List<String>> listDataChild;
+    HashMap<Article, String> listDataChild;
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +35,17 @@ public class MainActivity extends Activity {
 	
         actionBar.setBackgroundDrawable(colorDrawable);
 
-		
- 
-        // get the listview
+	       // get the listview
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
  
         // preparing list data
         prepareListData();
  
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
- 
+         
         // setting list adapter
         expListView.setAdapter(listAdapter);
+        
  
         // Listview Group click listener
         expListView.setOnGroupClickListener(new OnGroupClickListener() {
@@ -115,26 +114,26 @@ public class MainActivity extends Activity {
      */
     private void prepareListData() {
         listDataHeader = new ArrayList<Article>();
-        listDataChild = new HashMap<Article, List<String>>();
+        listDataChild = new HashMap<Article, String>();
  
         // Adding child data
-                
-        listDataHeader.add(new Article("New", "2013-10-15 10.30", "For this we will need your User stories and one or more of them will be put into the first sprint."));
-        listDataHeader.add(new Article("Not so new", "2013-10-14 10.30", "We will need your User stories and one or more of them will be put into the first sprint."));
-        listDataHeader.add(new Article("Old", "2013-10-13 10.30", "For this we will need your User stories."));
-        listDataHeader.add(new Article("Oldest", "2013-10-12 10.30", "For this we will need your User stories."));
+        
+        listDataHeader.add(new Article("New", "2013-10-15 10.30", "For this we will need your User stories and one or more of them will be put into the first sprint.", "330A"));
+        listDataHeader.add(new Article("Not so new", "2013-10-14 10.30", "We will need your User stories and one or more of them will be put into the first sprint.", "320B"));
+        listDataHeader.add(new Article("Old", "2013-10-13 10.30", "For this we will need your User stories.", "330A"));
+        listDataHeader.add(new Article("Oldest", "2013-10-12 10.30", "For this we will need your User stories.", "330A"));
         
         // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.");
+        String top250;
+        top250 = "For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.";
     
-        List<String> nowShowing = new ArrayList<String>();
+        String nowShowing;
         //nowShowing.add("For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.");
-        nowShowing.add("For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.");
+        nowShowing = "For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.";
         
-        List<String> comingSoon = new ArrayList<String>();
+        String comingSoon;
     //    comingSoon.add("For this we will need your User stories and one or more of them will be put into the first sprint.");
-        comingSoon.add("For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.");
+        comingSoon = "For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint. For this we will need your User stories and oe or more of them will be put into the first sprint. For this we will need your User stories and one or more of them will be put into the first sprint.";
         
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
         listDataChild.put(listDataHeader.get(1), nowShowing);

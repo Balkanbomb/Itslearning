@@ -1,57 +1,53 @@
 package com.example.mad2013_itslearning;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 
-public class Article implements Comparable<Article>{
-	private String title;
-	private URL link;
-	private String description;
-	private Date date;
-	private String author;
+public class Article {
+	String articleHeader;
+	String articleDate;
+	String articleText;
+	String articleCourseCode;
+	boolean textVisible;
+	//RSSItem item;
 	
-	public String getTitle() {
-		return title;
+	public Article(String articleHeader, String articleDate, String articleText) {
+		super();
+		this.articleHeader = articleHeader;
+		this.articleDate = articleDate;
+		this.articleText = articleText;
+		this.textVisible = true;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public String getArticleHeader() {
+		return articleHeader;
 	}
-	public URL getLink() {
-		return link;
+	public void setArticleHeader(String articleHeader) {
+		this.articleHeader = articleHeader;
 	}
-	public void setLink(String link) {
-		try {
-			this.link = new URL(link);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String getArticleDate() {
+		return articleDate;
 	}
-	public String getDescription() {
-		return description;
+	public void setArticleDate(String articleDate) {
+		this.articleDate = articleDate;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+	public String getArticleText() {
+		return articleText;
 	}
-	public Date getDate() {
-		return date;
+	public void setArticleText(String articleText) {
+		this.articleText = articleText;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public boolean isTextVisible() {
+		return textVisible;
 	}
-	public String getAuthor() {
-		return author;
+	public void setTextVisible(boolean textVisible) {
+		this.textVisible = textVisible;
 	}
-	public void setAuthor(String author) {
-		this.author = author;
+	public String getArticleCourseCode() {
+		return articleCourseCode;
 	}
-	@Override
-	public int compareTo(Article another) {
-		return this.date.compareTo(another.date);
+	public void setArticleCourseCode(String articleCourseCode) {
+		this.articleCourseCode = articleCourseCode;
 	}
 	
-	public String toString() {
-		return title + "\n-----------\n" + date.toString() + "\n-----------\n" + description;
-	}
+	
+
 }

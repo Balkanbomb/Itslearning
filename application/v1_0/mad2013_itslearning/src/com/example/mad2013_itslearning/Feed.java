@@ -9,7 +9,7 @@ import java.util.Calendar;
 public abstract class Feed {
 	private URL rssLink;
 	private Boolean notify;
-	private ArrayList<Article> articleList;
+	private ArrayList<ArticleOld> articleList;
 	
 	
 	public Boolean getNotify() {
@@ -20,21 +20,13 @@ public abstract class Feed {
 		this.notify = notify;
 	}
 
-	public Course getCourse() {
-		return course;
-	}
-
-	public void setCourse(Course course) {
-		this.course = course;
-	}
-
-	public void setArticleList(ArrayList<Article> articleList) {
+	public void setArticleList(ArrayList<ArticleOld> articleList) {
 		this.articleList = articleList;
 	}
 
 	
-	public ArrayList<Article> getArticleList(Calendar lastDisplayDate, Boolean filter) {
-		ArrayList<Article> articleListDisplayed = new ArrayList<Article>();
+	public ArrayList<ArticleOld> getArticleList(Calendar lastDisplayDate, Boolean filter) {
+		ArrayList<ArticleOld> articleListDisplayed = new ArrayList<ArticleOld>();
 		if (filter){
 			int length=articleList.size();
 			for (int i=0;i<length;i++){

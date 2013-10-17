@@ -38,15 +38,17 @@ public class RssTest extends Activity implements
 	public void onFeedComplete(RSSFeed feed) {
 		time2 = new Date().getTime() - time1;
 
+		
+		
 		if (downloadTask.hasException()) {
 			Log.e(TAG, downloadTask.getException().toString());
 		} else {
 			List<RSSItem> list = feed.getItems();
-			ArrayList<Article> articleList = new ArrayList<Article>();
+			ArrayList<ArticleOld> articleList = new ArrayList<ArticleOld>();
 
 			int count = 0;
 			for (RSSItem i : list) {
-				Article article = new Article();
+				ArticleOld article = new ArticleOld();
 				article.setDate(i.getPubDate());
 				article.setDescription(android.text.Html.fromHtml(
 						i.getDescription()).toString());
@@ -63,7 +65,7 @@ public class RssTest extends Activity implements
 			try {
 				ListView view = (ListView) findViewById(R.id.listView1);
 				view.setScrollingCacheEnabled(false);
-				ArrayAdapter<Article> adapter = new ArrayAdapter<Article>(this,
+				ArrayAdapter<ArticleOld> adapter = new ArrayAdapter<ArticleOld>(this,
 						android.R.layout.simple_list_item_1, articleList);
 				view.setAdapter(adapter);
 			} catch (Exception e) {
@@ -75,25 +77,6 @@ public class RssTest extends Activity implements
 		}
 		
 		Log.e(TAG, "times: " + String.format("rss: %d ms | articles: %d ms | adapter: %d ms", time2, time3, time4));
-	}
-
-	//@Override
-	public void xonFeedComplete(RSSFeed feed) {
-		if (downloadTask.hasException()) {
-			Log.e(TAG, downloadTask.getException().toString());
-		} else {
-			List<RSSItem> list = feed.getItems();
-
-			// put the artilelist in a listview, just for show
-			try {
-				ListView view = (ListView) findViewById(R.id.listView1);
-				ArrayAdapter<RSSItem> adapter = new ArrayAdapter<RSSItem>(this,
-						android.R.layout.simple_list_item_1, list);
-				view.setAdapter(adapter);
-			} catch (Exception e) {
-				Log.e(TAG, e.toString());
-			}
-		}
 	}
 
 	public void doRefresh(View v) {

@@ -1,16 +1,17 @@
 package com.example.mad2013_itslearning;
 
-import java.util.HashMap;
 import java.util.List;
- 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
- 
+
+/*
+ * @author asampe
+ * 
+ */
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     private Context _context;
@@ -29,7 +30,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
           return this._listDataHeader.get(groupPosition); 
-          //this._listDataChild.get(this._listDataHeader.get(groupPosition));
     }
  
     @Override
@@ -40,8 +40,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
- 
-        //final String childText = (String) getChild(groupPosition, childPosition);
  
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -97,7 +95,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (headerTitle.isTextVisible())
         {
         	lblListHeaderText.setVisibility(View.VISIBLE);
-        	lblListHeaderText.setText(headerTitle.getArticleText());
+        	lblListHeaderText.setText(headerTitle.getSummary());
         }
         else
         {
@@ -109,7 +107,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         	//convertView.setVisibility(View.GONE);	
         
         }    
-        
+
         return convertView;
         
     }

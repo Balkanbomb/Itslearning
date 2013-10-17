@@ -4,22 +4,40 @@ import java.util.Date;
 
 import org.mcsoxford.rss.RSSItem;
 
-public class Article implements Comparable<Article> {
+/* @author asampe
+ * @author marcusmansson
+ * 
+ * this is a wrapper class for RSSItem, adding features such as making the 
+ * articles sortable, and method for getting a summary text for large content 
+ * 
+ * 
+ */
+public class Article implements Comparable<Article>
+{
 	private String articleCourseCode;
 	private RSSItem rssItem;
 	private boolean textVisible;
+	private static final int maxSummaryLength = 80;
+	private String articleHeader;
+	private String articleDate;
+	private String articleText;
 
-	String articleHeader;
-	String articleDate;
-	String articleText;
-	
-	public Article(RSSItem item) {
+	/*
+	 * use this constructor
+	 */
+	public Article(RSSItem item)
+	{
 		super();
 		this.rssItem = item;
+		this.articleCourseCode = "T3ST";
 		this.textVisible = true;
 	}
-	
-	public Article(String articleHeader, String articleDate, String articleText, String courseCode) {
+
+	/*
+	 * deprecated test constructor
+	 */
+	public Article(String articleHeader, String articleDate, String articleText, String courseCode)
+	{
 		super();
 		this.articleHeader = articleHeader;
 		this.articleDate = articleDate;
@@ -30,49 +48,76 @@ public class Article implements Comparable<Article> {
 	}
 
 	@Override
-	public int compareTo(Article another) {
-		//return this.rssItem.getPubDate().compareTo(another.getArticleDate());
-		return 0;
+	public int compareTo(Article another)
+	{
+		return another.getArticlePubDate().compareTo(rssItem.getPubDate());
 	}
 
-	public String getArticleHeader() {
+	public String getArticleHeader()
+	{
 		if (this.rssItem == null)
 			return this.articleHeader;
 		else
 			return this.rssItem.getTitle();
 	}
-	
-	public String getArticleDate() {
+
+	public String getArticleDate()
+	{
 		if (this.rssItem == null)
 			return this.articleDate;
 		else
 			return this.rssItem.getPubDate().toString();
 	}
 
-	public String getArticleText() {
+	public Date getArticlePubDate()
+	{
+		return this.rssItem.getPubDate();
+	}
+
+	public String getArticleText()
+	{
 		if (this.rssItem == null)
 			return this.articleText;
 		else
 			return android.text.Html.fromHtml(this.rssItem.getDescription()).toString();
 	}
-	
-	public boolean isTextVisible() {
+
+	public String getSummary()
+	{
+		String summary = this.getArticleText();
+		
+		if (summary.length() > maxSummaryLength)
+		{
+			return summary.substring(0, maxSummaryLength) + "...";
+		}
+		else
+		{
+			return summary;
+		}
+	}
+
+	public boolean isTextVisible()
+	{
 		return textVisible;
 	}
-	
-	public void setTextVisible(boolean textVisible) {
+
+	public void setTextVisible(boolean textVisible)
+	{
 		this.textVisible = textVisible;
 	}
-	
-	public String getArticleCourseCode() {
+
+	public String getArticleCourseCode()
+	{
 		return articleCourseCode;
 	}
-	
-	public void setArticleCourseCode(String articleCourseCode) {
+
+	public void setArticleCourseCode(String articleCourseCode)
+	{
 		this.articleCourseCode = articleCourseCode;
 	}
-	
-	public String toString() {
+
+	public String toString()
+	{
 		return this.getArticleHeader() + "\n-----------\n" + this.getArticleDate().toString() + "\n-----------\n" + this.getArticleText();
 	}
 }

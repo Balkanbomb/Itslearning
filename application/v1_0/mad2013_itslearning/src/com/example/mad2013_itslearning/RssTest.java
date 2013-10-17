@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+/*
+ * @author marcusmansson
+ */
 public class RssTest extends Activity implements
 		FeedDownloadTask.FeedCompleteListener {
 

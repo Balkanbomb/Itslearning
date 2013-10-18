@@ -132,7 +132,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		else
 		{
 			/*
-			 * all feeds have been red so let's reset counter. 
+			 * all feeds have been read so let's reset counter. 
 			 * this way it's possible to call processFeeds() 
 			 * again if we just want to refresh articleList.
 			 */

@@ -42,7 +42,8 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed>
 		}
 		catch (ClassCastException e)
 		{
-			throw new ClassCastException(callbackHandler.toString() + " must implement FeedCompleteListener");
+			throw new ClassCastException(callbackHandler.toString()
+					+ " must implement FeedCompleteListener");
 		}
 	}
 

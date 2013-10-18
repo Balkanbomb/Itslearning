@@ -71,14 +71,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
 	{
-		Article headerTitle = (Article) getGroup(groupPosition);
-
 		if (convertView == null)
 		{
 			LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = infalInflater.inflate(R.layout.list_group, null);
 		}
 
+		Article headerTitle = (Article) getGroup(groupPosition);
 		TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
 		TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
 		TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
@@ -96,6 +95,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 			lblListHeaderText.setVisibility(View.GONE);
 		}
 
+		/*
+		 * filter example
+		 */
 		if (headerTitle.getArticleCourseCode().equals("320B"))
 		{
 			//convertView.setVisibility(View.GONE);	

@@ -58,7 +58,7 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed>
 			/*
 			 * get the feed
 			 */
-			Log.e(TAG, "Retrieving " + url);
+			Log.i(TAG, "Retrieving " + url);
 			feed = reader.load(url);
 		}
 		catch (Exception e)

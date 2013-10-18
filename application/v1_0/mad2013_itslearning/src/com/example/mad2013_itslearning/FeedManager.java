@@ -7,10 +7,12 @@ import android.util.Log;
 
 /* @author marcusmansson
  * 
- * FeedManager is responsible for managing several feeds, fetching them sequentially 
- * and creating article objects of the items found.
+ * FeedManager is responsible for managing several feeds, fetching 
+ * them sequentially and creating article objects of the items   
+ * found.
  * 
- * FeedManager will return all articles to the registered FeedCompleteListener when done.
+ * FeedManager will return all articles to the registered 
+ * FeedCompleteListener when done.
  * 
  * Usage:
  *  
@@ -51,15 +53,17 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		}
 		catch (ClassCastException e)
 		{
-			throw new ClassCastException(callbackHandler.toString() + " must implement FeedManagerDoneListener");
+			throw new ClassCastException(callbackHandler.toString() 
+					+ " must implement FeedManagerDoneListener");
 		}
 	}
 
 	public void addFeedURL(String url) // throws MalformedURLException
 	{
 		/*
-		 *  even though we use simple strings, we should throw exception if the string is not 
-		 *  a valid url for sake of problem finding
+		 *  even though we use simple strings, we should throw  
+		 *  exception if the string is not a valid url for sake 
+		 *  of finding errors
 		try
 		{
 			URL test = new URL(url);

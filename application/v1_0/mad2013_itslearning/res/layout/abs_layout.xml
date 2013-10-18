@@ -22,5 +22,5 @@
         android:text="It&apos;s Learning"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/grey_dark" />
-
+    
 </LinearLayout>

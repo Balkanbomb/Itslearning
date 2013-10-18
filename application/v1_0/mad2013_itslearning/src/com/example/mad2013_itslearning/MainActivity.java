@@ -18,14 +18,21 @@ import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.Toast;
 
-/*
- * @author asampe
+/* @author asampe
  * @author marcusmansson
+ * 
+ * TODO:
+ * o Save articleList (make serializable) and use that as default before refresh 
+ *   is done when app is started
+ * 
+ * o Load articleList
+ * 
+ * o Set course colors and update course codes 
+ * 
  * 
  */
 public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener
 {
-
 	private final String TAG = "RSSTEST";
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
@@ -103,7 +110,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	@Override
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
-		Log.e(TAG, "All feeds are read, # of articles: " + articles.size());
+		Log.i(TAG, "# of articles red: " + articles.size());
 
 		/*
 		 *  sorts the list by date in descending order (using Article.compareTo())

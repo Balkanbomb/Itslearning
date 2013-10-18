@@ -13,13 +13,12 @@ import android.util.Log;
  */
 public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed>
 {
-
 	private final String TAG = "RSSTEST";
 	private FeedCompleteListener callbackHandler;
 	private Exception exception;
 
 	/*
-	 * the reciever must implement this method
+	 * the listener must implement this method
 	 */
 	public interface FeedCompleteListener
 	{

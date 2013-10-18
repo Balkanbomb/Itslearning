@@ -22,13 +22,16 @@ import android.widget.Toast;
  * @author marcusmansson
  * 
  * TODO:
- * o Save articleList (make serializable) and use that as default before refresh 
- *   is done when app is started
+ * 
+ * o Save articleList (make serializable) 
  * 
  * o Load articleList
  * 
- * o Set course colors and update course codes 
+ * o Initialize list with cached articles when app is started  
+ *   
+ * o Set course colors and update course codes in the UI 
  * 
+ * o Fix text overflow in the UI
  * 
  */
 public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener
@@ -61,6 +64,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=16066&PersonId=71004&CustomerId=719&Guid=52845be1dfae034819b676d6d2b18733&Culture=sv-SE");
 		feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18190&PersonId=94952&CustomerId=719&Guid=96721ee137e0c918227093aa54f16f80&Culture=en-GB");
 		feedManager.addFeedURL("http://www.mah.se/Nyheter/RSS/Anslagstavla-fran-Malmo-hogskola/");
+		feedManager.addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
 		
 		// get the listview
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
@@ -104,6 +108,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 			}
 		});
 		
+		Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds" , Toast.LENGTH_SHORT).show();
 		feedManager.processFeeds();
 	}
 
@@ -111,6 +116,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
 		Log.i(TAG, "# of articles red: " + articles.size());
+		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles recieved", Toast.LENGTH_SHORT).show();
 
 		/*
 		 *  sorts the list by date in descending order (using Article.compareTo())

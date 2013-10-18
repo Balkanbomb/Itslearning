@@ -77,6 +77,11 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		this.feedList.add(url);
 	}
 
+	public int queueSize()
+	{
+		return this.feedList.size();
+	}
+	
 	public void removeFeedURL(String url)
 	{
 		this.feedList.remove(url);
@@ -100,9 +105,14 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		}
 		else
 		{
+			Article article;
+			
 			for (RSSItem rssItem : feed.getItems())
 			{
-				articleList.add(new Article(rssItem));
+				article = new Article(rssItem);
+				
+				if (!articleList.contains(article))
+					articleList.add(article);
 			}
 		}
 		
@@ -117,9 +127,10 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			 *  reset counter
 			 */
 			feedQueueCounter = 0;
-			
+
 			/*
 			 *  return the complete list of articles to the listener
+			 *  when all items in the feed queue are processed
 			 */
 			callbackHandler.onFeedManagerDone(getArticles());
 		}

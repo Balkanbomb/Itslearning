@@ -94,7 +94,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		if (headerTitle.isTextVisible())
 		{
 			lblListHeaderText.setVisibility(View.VISIBLE);
-			lblListHeaderText.setText(headerTitle.getSummary());
+			lblListHeaderText.setText(headerTitle.getArticleSummary());
 		}
 		else
 		{

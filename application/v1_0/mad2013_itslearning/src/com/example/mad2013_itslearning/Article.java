@@ -82,7 +82,7 @@ public class Article implements Comparable<Article>
 			return android.text.Html.fromHtml(this.rssItem.getDescription()).toString();
 	}
 
-	public String getSummary()
+	public String getArticleSummary()
 	{
 		String summary = this.getArticleText();
 		
@@ -118,6 +118,6 @@ public class Article implements Comparable<Article>
 
 	public String toString()
 	{
-		return this.getArticleHeader() + "\n-----------\n" + this.getArticleDate().toString() + "\n-----------\n" + this.getArticleText();
+		return this.getArticleHeader() + "\n-----------\n" + this.getArticleDate().toString() + "\n-----------\n" + this.getArticleSummary();
 	}
 }

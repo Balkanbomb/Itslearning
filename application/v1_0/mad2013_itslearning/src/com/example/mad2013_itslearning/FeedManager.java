@@ -79,12 +79,12 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 
 	public int queueSize()
 	{
-		return this.feedList.size();
+		return feedList.size();
 	}
 	
 	public void removeFeedURL(String url)
 	{
-		this.feedList.remove(url);
+		feedList.remove(url);
 	}
 	
 	public void reset() {
@@ -110,21 +110,31 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			for (RSSItem rssItem : feed.getItems())
 			{
 				article = new Article(rssItem);
-				
+
+				/*
+				 *  one way of discarding duplicates (e.g. when 
+				 *  refreshing, don't add old articles) 
+				 */
 				if (!articleList.contains(article))
+				{
 					articleList.add(article);
+				}
 			}
 		}
 		
 		if (feedQueueCounter < this.feedList.size())
 		{
-			// process next feed in queue
+			/*
+			 *  process next feed in queue
+			 */
 			processFeeds();
 		}
 		else
 		{
 			/*
-			 *  reset counter
+			 * all feeds have been red so let's reset counter. 
+			 * this way it's possible to call processFeeds() 
+			 * again if we just want to refresh articleList.
 			 */
 			feedQueueCounter = 0;
 

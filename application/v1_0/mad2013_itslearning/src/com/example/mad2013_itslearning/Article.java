@@ -1,7 +1,6 @@
 package com.example.mad2013_itslearning;
 
 import java.util.Date;
-
 import org.mcsoxford.rss.RSSItem;
 
 /* @author asampe
@@ -18,9 +17,6 @@ public class Article implements Comparable<Article>
 	private RSSItem rssItem;
 	private boolean textVisible;
 	private static final int maxSummaryLength = 80;
-	private String articleHeader;
-	private String articleDate;
-	private String articleText;
 
 	/*
 	 * use this constructor
@@ -28,23 +24,9 @@ public class Article implements Comparable<Article>
 	public Article(RSSItem item)
 	{
 		super();
-		this.rssItem = item;
-		this.articleCourseCode = "T3ST";
-		this.textVisible = true;
-	}
-
-	/*
-	 * deprecated test constructor
-	 */
-	public Article(String articleHeader, String articleDate, String articleText, String courseCode)
-	{
-		super();
-		this.articleHeader = articleHeader;
-		this.articleDate = articleDate;
-		this.articleText = articleText;
-		this.articleCourseCode = courseCode;
-		this.textVisible = true;
-		this.rssItem = null;
+		rssItem = item;
+		articleCourseCode = "TEST";
+		textVisible = true;
 	}
 
 	@Override
@@ -55,36 +37,27 @@ public class Article implements Comparable<Article>
 
 	public String getArticleHeader()
 	{
-		if (this.rssItem == null)
-			return this.articleHeader;
-		else
-			return this.rssItem.getTitle();
+		return rssItem.getTitle();
 	}
 
 	public String getArticleDate()
 	{
-		if (this.rssItem == null)
-			return this.articleDate;
-		else
-			return this.rssItem.getPubDate().toString();
+		return rssItem.getPubDate().toString();
 	}
 
 	public Date getArticlePubDate()
 	{
-		return this.rssItem.getPubDate();
+		return rssItem.getPubDate();
 	}
 
 	public String getArticleText()
 	{
-		if (this.rssItem == null)
-			return this.articleText;
-		else
-			return android.text.Html.fromHtml(this.rssItem.getDescription()).toString();
+		return android.text.Html.fromHtml(rssItem.getDescription()).toString();
 	}
 
 	public String getArticleSummary()
 	{
-		String summary = this.getArticleText();
+		String summary = getArticleText();
 		
 		if (summary.length() > maxSummaryLength)
 		{
@@ -101,9 +74,9 @@ public class Article implements Comparable<Article>
 		return textVisible;
 	}
 
-	public void setTextVisible(boolean textVisible)
+	public void setTextVisible(boolean visible)
 	{
-		this.textVisible = textVisible;
+		textVisible = visible;
 	}
 
 	public String getArticleCourseCode()
@@ -111,13 +84,13 @@ public class Article implements Comparable<Article>
 		return articleCourseCode;
 	}
 
-	public void setArticleCourseCode(String articleCourseCode)
+	public void setArticleCourseCode(String courseCode)
 	{
-		this.articleCourseCode = articleCourseCode;
+		articleCourseCode = courseCode;
 	}
 
 	public String toString()
 	{
-		return this.getArticleHeader() + "\n-----------\n" + this.getArticleDate().toString() + "\n-----------\n" + this.getArticleSummary();
+		return getArticleHeader();
 	}
 }

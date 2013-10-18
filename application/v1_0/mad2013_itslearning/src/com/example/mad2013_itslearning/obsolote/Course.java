@@ -1,4 +1,5 @@
-package com.example.mad2013_itslearning;
+package com.example.mad2013_itslearning.obsolote;
+
 
 import android.graphics.Color;
 

@@ -1,9 +1,10 @@
-package com.example.mad2013_itslearning;
+package com.example.mad2013_itslearning.obsolote;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 
 
 public abstract class Feed {

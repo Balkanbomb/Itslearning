@@ -1,10 +1,19 @@
-package com.example.mad2013_itslearning;
+package com.example.mad2013_itslearning.obsolote;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
+
+import com.example.mad2013_itslearning.Article;
+import com.example.mad2013_itslearning.FeedDownloadTask;
+import com.example.mad2013_itslearning.R;
+import com.example.mad2013_itslearning.FeedDownloadTask.FeedCompleteListener;
+import com.example.mad2013_itslearning.R.id;
+import com.example.mad2013_itslearning.R.layout;
+import com.example.mad2013_itslearning.R.menu;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;

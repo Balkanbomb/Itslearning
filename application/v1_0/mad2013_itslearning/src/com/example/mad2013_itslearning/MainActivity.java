@@ -2,7 +2,6 @@ package com.example.mad2013_itslearning;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -40,7 +39,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
 	List<Article> listDataHeader;
-	HashMap<Article, String> listDataChild;
 	FeedManager feedManager;
 
 	@Override
@@ -108,15 +106,15 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 			}
 		});
 		
-		Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds" , Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds, please wait" , Toast.LENGTH_LONG).show();
 		feedManager.processFeeds();
 	}
 
 	@Override
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
-		Log.i(TAG, "# of articles red: " + articles.size());
-		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles recieved", Toast.LENGTH_SHORT).show();
+		Log.i(TAG, "# of articles in aggregated feed: " + articles.size());
+		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_SHORT).show();
 
 		/*
 		 *  sorts the list by date in descending order (using Article.compareTo())

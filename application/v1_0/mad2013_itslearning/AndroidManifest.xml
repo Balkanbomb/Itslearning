@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.mad2013_itslearning.RssTest"
+            android:name="com.example.mad2013_itslearning.obsolote.RssTest"
             android:label="@string/title_activity_rss_test" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-/*
- * @author asampe
+/* @author asampe
+ * 
+ * 
  */
 public class ExpandableListAdapter extends BaseExpandableListAdapter
 {
 	private Context _context;
 	private List<Article> _listDataHeader; // header titles
-	boolean showHeaderText = true;
 
 	public ExpandableListAdapter(Context context, List<Article> listDataHeader)
 	{
@@ -38,7 +38,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	@Override
 	public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
 	{
-
 		if (convertView == null)
 		{
 			LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -46,7 +45,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		}
 
 		TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
-
 		txtListChild.setText(this._listDataHeader.get(groupPosition).getArticleText());
 
 		return convertView;
@@ -82,14 +80,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		}
 
 		TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+		TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
+		TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
 
 		lblListHeader.setText(headerTitle.getArticleHeader());
-
-		TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
-
 		lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
-
-		TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
 
 		if (headerTitle.isTextVisible())
 		{
@@ -104,7 +99,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		if (headerTitle.getArticleCourseCode().equals("320B"))
 		{
 			//convertView.setVisibility(View.GONE);	
-
 		}
 
 		return convertView;
@@ -126,27 +120,22 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	@Override
 	public void onGroupCollapsed(int groupPosition)
 	{
-		// TODO Auto-generated method stub
 		super.onGroupCollapsed(groupPosition);
 		Article headerTitle = (Article) getGroup(groupPosition);
 		headerTitle.setTextVisible(true);
-
 	}
 
 	@Override
 	public void onGroupExpanded(int groupPosition)
 	{
-		// TODO Auto-generated method stub
 		super.onGroupExpanded(groupPosition);
 		Article headerTitle = (Article) getGroup(groupPosition);
 		headerTitle.setTextVisible(false);
-
 	}
 
 	@Override
 	public int getChildrenCount(int groupPosition)
 	{
-		// TODO Auto-generated method stub
 		return 1;
 	}
 }

@@ -33,20 +33,16 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	private int feedQueueCounter;
 
 	/*
-	 * the listener must implement this method
+	 * the listener must implement this methods
 	 */
 	public interface FeedManagerDoneListener
 	{
 		public void onFeedManagerDone(ArrayList<Article> articles);
+		public void onFeedManagerProgress(int progress, int max);
 	}
 
 	public FeedManager(FeedManagerDoneListener callbackHandler)
 	{
-		super();
-		articleList = new ArrayList<Article>();
-		feedList = new ArrayList<String>();
-		feedQueueCounter = 0;
-		
 		try
 		{
 			this.callbackHandler = (FeedManagerDoneListener) callbackHandler;
@@ -56,6 +52,10 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			throw new ClassCastException(callbackHandler.toString() 
 					+ " must implement FeedManagerDoneListener");
 		}
+
+		articleList = new ArrayList<Article>();
+		feedList = new ArrayList<String>();
+		feedQueueCounter = 0;
 	}
 
 	public void addFeedURL(String url) // throws MalformedURLException
@@ -89,6 +89,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	
 	public void reset() {
 		feedQueueCounter = 0;
+		articleList.clear();
 	}
 	
 	public ArrayList<Article> getArticles()
@@ -106,19 +107,11 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		else
 		{
 			Article article;
-			
 			for (RSSItem rssItem : feed.getItems())
 			{
 				article = new Article(rssItem);
-
-				/*
-				 *  one way of discarding duplicates (e.g. when 
-				 *  refreshing, don't add old articles) 
-				 */
-				if (!articleList.contains(article))
-				{
-					articleList.add(article);
-				}
+				articleList.add(article);
+				article.setArticleCourseCode(Integer.toString(feedQueueCounter));
 			}
 		}
 		
@@ -138,7 +131,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			 */
 			feedQueueCounter = 0;
 
-			/*
+	        /*
 			 *  return the complete list of articles to the listener
 			 *  when all items in the feed queue are processed
 			 */
@@ -153,6 +146,8 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			Log.e(TAG, "Feed list is empty, nothing to do!");
 			return;
 		}
+		
+		callbackHandler.onFeedManagerProgress(feedQueueCounter + 1, feedList.size());
 		
 		/* 
 		 * there can only be one task at any time and it can only be used once

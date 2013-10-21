@@ -2,6 +2,7 @@ package com.example.mad2013_itslearning;
 
 import java.util.List;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

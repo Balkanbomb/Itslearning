@@ -73,7 +73,6 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed>
 			/*
 			 * always release resources
 			 */
-
 			reader.close();
 		}
 
@@ -86,7 +85,7 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed>
 	protected void onPostExecute(RSSFeed feed)
 	{
 		/*
-		 * pass the result back to the caller
+		 * pass the result back to listener
 		 */
 		callbackHandler.onFeedComplete(feed);
 	}

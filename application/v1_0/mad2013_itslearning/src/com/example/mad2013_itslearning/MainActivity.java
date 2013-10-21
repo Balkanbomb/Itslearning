@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -40,13 +41,14 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	ExpandableListView expListView;
 	List<Article> listDataHeader;
 	FeedManager feedManager;
+    private ProgressDialog dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		// Change color actionbar
 		ColorDrawable colorDrawable = new ColorDrawable();
 		colorDrawable.setColor(Color.WHITE);
@@ -56,6 +58,9 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		actionBar.setBackgroundDrawable(colorDrawable);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		actionBar.setCustomView(R.layout.abs_layout);
+
+		dialog = new ProgressDialog(this);
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
 		feedManager = new FeedManager(this);
 		feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
@@ -106,16 +111,27 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 			}
 		});
 		
-		Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds, please wait" , Toast.LENGTH_LONG).show();
+		//Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds, please wait" , Toast.LENGTH_LONG).show();
 		feedManager.processFeeds();
 	}
 
+	public void onFeedManagerProgress(int progress, int max)
+	{
+		
+        //dialog.setMessage(String.format("Downloading feed %d of %d", progress, max));
+        dialog.setMessage("Updating");
+        dialog.setProgress(progress);
+        dialog.setMax(max);
+        dialog.show();            
+		//Toast.makeText(getApplicationContext(), String.format("Downloading feed %d of %d", progress, max) , Toast.LENGTH_SHORT).show();
+	}
+	
 	@Override
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
 		Log.i(TAG, "# of articles in aggregated feed: " + articles.size());
 		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_SHORT).show();
-
+		
 		/*
 		 *  sorts the list by date in descending order (using Article.compareTo())
 		 */
@@ -126,5 +142,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		 */
 		listAdapter = new ExpandableListAdapter(this, articles);
 		expListView.setAdapter(listAdapter);
+        dialog.dismiss();
 	}
 }

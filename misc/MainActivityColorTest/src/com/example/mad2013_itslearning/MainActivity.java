@@ -1,10 +1,13 @@
 package com.example.mad2013_itslearning;
 
-import itslearning.platform.restApi.sdk.common.entities.UserInfo;
+//import itslearning.platform.restApi.sdk.common.entities.UserInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+//import com.mah.aa_studentapp.R;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -14,6 +17,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
@@ -45,7 +50,10 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	ExpandableListView expListView;
 	List<Article> listDataHeader;
 	FeedManager feedManager;
-    private ProgressDialog dialog;
+    private //*
+	//ProgressDialog dialog;
+ProgressBar progBar;
+TextView txProgress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -62,9 +70,12 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		actionBar.setBackgroundDrawable(colorDrawable);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		actionBar.setCustomView(R.layout.abs_layout);
-
-		dialog = new ProgressDialog(this);
-		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		//*		
+		//dialog = new ProgressDialog(this);
+		//dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		
+		progBar = (ProgressBar) findViewById (R.id.progress);
+		txProgress = (TextView) findViewById (R.id.txProgess);
 
 		feedManager = new FeedManager(this);
 		feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
@@ -124,10 +135,21 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		
         //dialog.setMessage(String.format("Downloading feed %d of %d", progress, max));
-        dialog.setMessage("Updating");
-        dialog.setProgress(progress);
-        dialog.setMax(max);
-        dialog.show();            
+        
+		
+		
+		progBar.setProgress(progress);
+		progBar.setMax(max);
+		
+		
+		
+		
+		//*
+		// dialog.setMessage("Updating");
+        // dialog.setProgress(progress);
+        // dialog.setMax(max);
+        // dialog.show();
+		//*		
 		//Toast.makeText(getApplicationContext(), String.format("Downloading feed %d of %d", progress, max) , Toast.LENGTH_SHORT).show();
 	}
 	
@@ -148,6 +170,9 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		 */
 		listAdapter = new ExpandableListAdapter(this, articles);
 		expListView.setAdapter(listAdapter);
-        dialog.dismiss();
+		progBar.setVisibility(ProgressBar.GONE);
+		txProgress.setVisibility(TextView.GONE);
+        //* dialog.dismiss();
+		
 	}
 }

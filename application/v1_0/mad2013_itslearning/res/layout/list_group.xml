@@ -48,6 +48,7 @@
             </LinearLayout>
 
         <TextView
+            android:id="@+id/clrLine"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/blue" />

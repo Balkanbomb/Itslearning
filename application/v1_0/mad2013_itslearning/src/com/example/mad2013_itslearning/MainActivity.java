@@ -1,8 +1,13 @@
 package com.example.mad2013_itslearning;
 
+//import itslearning.platform.restApi.sdk.common.entities.UserInfo;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+//import com.mah.aa_studentapp.R;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,12 +17,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /* @author asampe
@@ -36,6 +41,8 @@ import android.widget.Toast;
  * o Fix text overflow in the UI
  * 
  */
+
+
 public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener
 {
 	private final String TAG = "RSSTEST";
@@ -44,9 +51,9 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	List<Article> listDataHeader;
 	FeedManager feedManager;
     private //*
-    		//ProgressDialog dialog;
-    ProgressBar progBar;
-    TextView txProgress;
+	//ProgressDialog dialog;
+ProgressBar progBar;
+TextView txProgress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -56,14 +63,13 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		
 		// Change color actionbar
 		ColorDrawable colorDrawable = new ColorDrawable();
-		colorDrawable.setColor(0xffdedede);
+		colorDrawable.setColor(Color.WHITE);
 
 		// custom ActionBar
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(colorDrawable);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		actionBar.setCustomView(R.layout.abs_layout);
-
 		//*		
 		//dialog = new ProgressDialog(this);
 		//dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -122,7 +128,8 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		
 		//Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds, please wait" , Toast.LENGTH_LONG).show();
 		feedManager.processFeeds();
-	}
+				
+		}
 
 	public void onFeedManagerProgress(int progress, int max)
 	{
@@ -149,10 +156,9 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	@Override
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
-		
 		Log.i(TAG, "# of articles in aggregated feed: " + articles.size());
-
 		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_SHORT).show();
+			
 		
 		/*
 		 *  sorts the list by date in descending order (using Article.compareTo())

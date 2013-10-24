@@ -3,8 +3,11 @@ package com.example.mad2013_itslearning;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+<<<<<<< HEAD
 import android.graphics.Color;
 import android.text.TextUtils;
+=======
+>>>>>>> origin/marcus-0.7.2
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +15,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/* @author asampe
- * 
- * 
+/*
+ * @author asampe, marcusmansson
  */
 public class ExpandableListAdapter extends BaseExpandableListAdapter
 {
@@ -38,6 +40,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		
 	}
 
+	public List<Article> getList()
+	{
+		return _listDataHeader;
+	}
+
+	public void setList(List<Article> list)
+	{
+		_listDataHeader = list;
+		notifyDataSetInvalidated();
+	}
+
 	@Override
 	public Object getChild(int groupPosition, int childPosititon)
 	{
@@ -53,12 +66,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	@Override
 	public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
 	{
-		if (convertView == null)
+		if (!_listDataHeader.isEmpty())
 		{
-			LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = infalInflater.inflate(R.layout.list_item, null);
+			if (convertView == null)
+			{
+				LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = infalInflater.inflate(R.layout.list_item, null);
+			}
+
+			TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
+			txtListChild.setText(this._listDataHeader.get(groupPosition).getArticleText());
 		}
 
+<<<<<<< HEAD
 		TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
 		ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
 				
@@ -77,6 +97,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		}
 					
 		
+=======
+>>>>>>> origin/marcus-0.7.2
 		return convertView;
 	}
 
@@ -101,8 +123,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
 	{
-		if (convertView == null)
+		if (!_listDataHeader.isEmpty())
 		{
+<<<<<<< HEAD
 			LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = infalInflater.inflate(R.layout.list_group, null);
 		}
@@ -149,6 +172,42 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		if (headerTitle.getArticleCourseCode().equals("320B"))
 		{
 			//convertView.setVisibility(View.GONE);	
+=======
+			if (convertView == null)
+			{
+				LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = infalInflater.inflate(R.layout.list_group, null);
+			}
+
+			Article headerTitle = (Article) getGroup(groupPosition);
+
+			TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+			TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
+			TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
+			TextView lblListCode = (TextView) convertView.findViewById(R.id.lblListCode);
+
+			lblListHeader.setText(headerTitle.getArticleHeader());
+			lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
+			lblListCode.setText(headerTitle.getArticleCourseCode());
+			
+			if (headerTitle.isTextVisible())
+			{
+				lblListHeaderText.setVisibility(View.VISIBLE);
+				lblListHeaderText.setText(headerTitle.getArticleSummary());
+			}
+			else
+			{
+				lblListHeaderText.setVisibility(View.GONE);
+			}
+
+			/*
+			 * filter example
+			 */
+			if (headerTitle.getArticleCourseCode().equals("1"))
+			{
+				//convertView.setVisibility(View.GONE);	
+			}
+>>>>>>> origin/marcus-0.7.2
 		}
 
 		return convertView;
@@ -171,16 +230,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	public void onGroupCollapsed(int groupPosition)
 	{
 		super.onGroupCollapsed(groupPosition);
-		Article headerTitle = (Article) getGroup(groupPosition);
-		headerTitle.setTextVisible(true);
+
+		if (!_listDataHeader.isEmpty())
+		{
+			Article headerTitle = (Article) getGroup(groupPosition);
+			headerTitle.setTextVisible(true);
+		}
 	}
 
 	@Override
 	public void onGroupExpanded(int groupPosition)
 	{
 		super.onGroupExpanded(groupPosition);
-		Article headerTitle = (Article) getGroup(groupPosition);
-		headerTitle.setTextVisible(false);
+
+		if (!_listDataHeader.isEmpty())
+		{
+			Article headerTitle = (Article) getGroup(groupPosition);
+			headerTitle.setTextVisible(false);
+		}
 	}
 
 	@Override

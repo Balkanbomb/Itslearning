@@ -1,20 +1,14 @@
 package com.example.mad2013_itslearning;
 
-<<<<<<< HEAD
 //import itslearning.platform.restApi.sdk.common.entities.UserInfo;
-
-=======
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
->>>>>>> origin/marcus-0.7.2
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 //import com.mah.aa_studentapp.R;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -32,11 +26,14 @@ import android.widget.TextView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
 
-/*
+/**
  * @author asampe, marcusmansson
  * 
  * 
- * version history: 
+ * HISTORY: 
+ * 0.7.3
+ *  o merged two branches (unknown version) with 0.7.2 
+ *  
  * 0.7.2 
  * 	o added saving/loading of articles to/from cache
  *  o load saved articles and initialize list on app start 
@@ -47,13 +44,8 @@ import android.widget.Toast;
  * o Set course colors and update course codes in the UI 
  * o Fix text overflow in the UI
  */
-<<<<<<< HEAD
 
-
-public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener
-=======
 public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener
->>>>>>> origin/marcus-0.7.2
 {
 	static final String TAG = "RSSTEST";
 	static final String CACHE_FILENAME = "article_cache.ser";
@@ -61,15 +53,10 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
 	FeedManager feedManager;
-<<<<<<< HEAD
-    private //*
-	//ProgressDialog dialog;
-ProgressBar progBar;
-TextView txProgress;
-=======
 	ProgressDialog dialog;
+	ProgressBar progBar;
+	TextView txProgress;
 	View headerView;
->>>>>>> origin/marcus-0.7.2
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -85,19 +72,15 @@ TextView txProgress;
 		actionBar.setBackgroundDrawable(colorDrawable);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		actionBar.setCustomView(R.layout.abs_layout);
-<<<<<<< HEAD
-		//*		
-		//dialog = new ProgressDialog(this);
-		//dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		
-		progBar = (ProgressBar) findViewById (R.id.progress);
-		txProgress = (TextView) findViewById (R.id.txProgess);
-=======
+
+		progBar = (ProgressBar) findViewById(R.id.progress);
+		txProgress = (TextView) findViewById(R.id.txProgess);
+		progBar.setVisibility(ProgressBar.GONE);
+		txProgress.setVisibility(TextView.GONE);
 
 		// create settings view and hide it
 		headerView = getLayoutInflater().inflate(R.layout.list_header, null);
 		this.hideSettingsView();
->>>>>>> origin/marcus-0.7.2
 
 		// set up the listview
 		feedManager = new FeedManager(this);
@@ -116,18 +99,10 @@ TextView txProgress;
 				return parent.collapseGroup(groupPosition);
 			}
 		});
-<<<<<<< HEAD
-		
-		//Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds, please wait" , Toast.LENGTH_LONG).show();
-		feedManager.processFeeds();
-				
-		}
-=======
 
 		// fetch data from cache or web
 		collectData();
 	}
->>>>>>> origin/marcus-0.7.2
 
 	public void onFeedManagerProgress(int progress, int max)
 	{
@@ -139,41 +114,18 @@ TextView txProgress;
 			dialog.setMessage("Downloading...");
 			dialog.show();
 		}
-		
-<<<<<<< HEAD
-        //dialog.setMessage(String.format("Downloading feed %d of %d", progress, max));
-        
-		
-		
-		progBar.setProgress(progress);
-		progBar.setMax(max);
-		
-		
-		
-		
-		//*
-		// dialog.setMessage("Updating");
-        // dialog.setProgress(progress);
-        // dialog.setMax(max);
-        // dialog.show();
-		//*		
-		//Toast.makeText(getApplicationContext(), String.format("Downloading feed %d of %d", progress, max) , Toast.LENGTH_SHORT).show();
-=======
 		dialog.setProgress(progress);
 		dialog.setMax(max);
->>>>>>> origin/marcus-0.7.2
+
+		/*
+		progBar.setProgress(progress);
+		progBar.setMax(max);
+		*/
 	}
 
 	@Override
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
-<<<<<<< HEAD
-		Log.i(TAG, "# of articles in aggregated feed: " + articles.size());
-		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_SHORT).show();
-			
-		
-=======
->>>>>>> origin/marcus-0.7.2
 		/*
 		 * sorts the list by date in descending order
 		 */
@@ -182,23 +134,12 @@ TextView txProgress;
 		/*
 		 * display the data in our listview
 		 */
-<<<<<<< HEAD
-		listAdapter = new ExpandableListAdapter(this, articles);
-		expListView.setAdapter(listAdapter);
+		listAdapter.notifyDataSetInvalidated();
+
 		progBar.setVisibility(ProgressBar.GONE);
 		txProgress.setVisibility(TextView.GONE);
-        //* dialog.dismiss();
-		
-		
-=======
-		//listAdapter.setList(articles);
-		listAdapter.notifyDataSetInvalidated();
-		
-		if (dialog != null)
-		{
-			dialog.dismiss();
-			dialog = null;
-		}
+		dialog.dismiss();
+		dialog = null;
 
 		Log.i(TAG, "# of articles in feed: " + articles.size());
 		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_LONG).show();
@@ -228,7 +169,6 @@ TextView txProgress;
 		{
 			FileInputStream fis = openFileInput(CACHE_FILENAME);
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			//listAdapter.setList((List<Article>) ois.readObject());
 			feedManager.getArticles().addAll((List<Article>) ois.readObject());
 			listAdapter.notifyDataSetInvalidated();
 		}
@@ -264,8 +204,8 @@ TextView txProgress;
 
 	private void refresh()
 	{
-		int count =  listAdapter.getGroupCount();
-		for (int i = 0; i < count ; i++)
+		int count = listAdapter.getGroupCount();
+		for (int i = 0; i < count; i++)
 			expListView.collapseGroup(i);
 		
 		if (feedManager.queueSize() == 0)
@@ -280,9 +220,8 @@ TextView txProgress;
 			feedManager.addFeedURL("http://www.mah.se/Nyheter/RSS/Anslagstavla-fran-Malmo-hogskola/");
 			//feedManager.addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
 		}
-		else
-			feedManager.reset();
 
+		feedManager.reset();
 		feedManager.processFeeds();
 	}
 
@@ -307,11 +246,9 @@ TextView txProgress;
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState)
 	{
-		if (expListView.getFirstVisiblePosition() == 0 
-				&& scrollState == OnScrollListener.SCROLL_STATE_IDLE)
+		if (expListView.getFirstVisiblePosition() == 0 && scrollState == OnScrollListener.SCROLL_STATE_IDLE)
 			showSettingsView();
 		else
 			hideSettingsView();
->>>>>>> origin/marcus-0.7.2
 	}
 }

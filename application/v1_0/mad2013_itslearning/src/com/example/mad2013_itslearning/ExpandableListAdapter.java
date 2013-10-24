@@ -3,11 +3,6 @@ package com.example.mad2013_itslearning;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
-<<<<<<< HEAD
-import android.graphics.Color;
-import android.text.TextUtils;
-=======
->>>>>>> origin/marcus-0.7.2
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,29 +10,29 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/*
+/**
  * @author asampe, marcusmansson
  */
 public class ExpandableListAdapter extends BaseExpandableListAdapter
 {
 	private Context _context;
 	private List<Article> _listDataHeader; // header titles
-	
+
 	//Temporary for testing - create arraylist of courses
-	ArrayList <Course> theCourses = new ArrayList <Course> ();
-	
+	ArrayList<Course> theCourses = new ArrayList<Course>();
+
 	public ExpandableListAdapter(Context context, List<Article> listDataHeader)
 	{
 		this._context = context;
 		this._listDataHeader = listDataHeader;
-	
+
 		// Trying to get the colors from our xml file
 		theCourses.add(new Course("1", context.getResources().getColor(R.color.blue)));
 		theCourses.add(new Course("2", context.getResources().getColor(R.color.yellow)));
 		theCourses.add(new Course("3", context.getResources().getColor(R.color.red)));
 		theCourses.add(new Course("4", context.getResources().getColor(R.color.green)));
 		theCourses.add(new Course("5", context.getResources().getColor(R.color.orange)));
-		
+
 	}
 
 	public List<Article> getList()
@@ -76,29 +71,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 
 			TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
 			txtListChild.setText(this._listDataHeader.get(groupPosition).getArticleText());
+			ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
+
+			/* 
+			 *  Choose the right color
+			 */
+			for (Course c : theCourses)
+			{
+				if (this._listDataHeader.get(groupPosition).getArticleCourseCode().equals(c.getCourseCode()))
+				{
+					imgClrCode.setBackgroundColor(c.getColor());
+				}
+			}
 		}
 
-<<<<<<< HEAD
-		TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
-		ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
-				
-		txtListChild.setText(this._listDataHeader.get(groupPosition).getArticleText());
-		
-		/* 
-		 *  Choose the right color
-		 */
-				
-		for (Course c : theCourses)
-		{
-			if (this._listDataHeader.get(groupPosition).getArticleCourseCode().equals(c.getCourseCode()))
-					{
-						imgClrCode.setBackgroundColor(c.getColor());							
-					}
-		}
-					
-		
-=======
->>>>>>> origin/marcus-0.7.2
 		return convertView;
 	}
 
@@ -125,54 +111,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	{
 		if (!_listDataHeader.isEmpty())
 		{
-<<<<<<< HEAD
-			LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = infalInflater.inflate(R.layout.list_group, null);
-		}
-
-		Article headerTitle = (Article) getGroup(groupPosition);
-		TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
-		TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
-		TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
-		TextView lblListCode = (TextView) convertView.findViewById(R.id.lblListCode);
-		ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
-		TextView txtClrLine = (TextView) convertView.findViewById(R.id.clrLine);
-		
-		lblListHeader.setText(headerTitle.getArticleHeader());
-		lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
-		lblListCode.setText(headerTitle.getArticleCourseCode());
-		
-		if (headerTitle.isTextVisible())
-		{
-			lblListHeaderText.setVisibility(View.VISIBLE);
-			lblListHeaderText.setText(headerTitle.getArticleSummary());
-		}
-		else
-		{
-			lblListHeaderText.setVisibility(View.GONE);
-		}
-		
-		/* 
-		 *  Choose the right color
-		 */
-				
-		for (Course c : theCourses)
-		{
-			if (headerTitle.getArticleCourseCode().equals(c.getCourseCode()))
-					{
-						imgClrCode.setBackgroundColor(c.getColor());
-						txtClrLine.setBackgroundColor(c.getColor());				
-					}
-		}
-		
-				
-		/*
-		 * filter example
-		 */
-		if (headerTitle.getArticleCourseCode().equals("320B"))
-		{
-			//convertView.setVisibility(View.GONE);	
-=======
 			if (convertView == null)
 			{
 				LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -180,16 +118,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 			}
 
 			Article headerTitle = (Article) getGroup(groupPosition);
-
 			TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
 			TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
 			TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
 			TextView lblListCode = (TextView) convertView.findViewById(R.id.lblListCode);
+			ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
+			TextView txtClrLine = (TextView) convertView.findViewById(R.id.clrLine);
 
 			lblListHeader.setText(headerTitle.getArticleHeader());
 			lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
 			lblListCode.setText(headerTitle.getArticleCourseCode());
-			
+
 			if (headerTitle.isTextVisible())
 			{
 				lblListHeaderText.setVisibility(View.VISIBLE);
@@ -200,14 +139,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 				lblListHeaderText.setVisibility(View.GONE);
 			}
 
-			/*
-			 * filter example
+			/* 
+			 *  Choose the right color
 			 */
-			if (headerTitle.getArticleCourseCode().equals("1"))
+
+			for (Course c : theCourses)
 			{
-				//convertView.setVisibility(View.GONE);	
+				if (headerTitle.getArticleCourseCode().equals(c.getCourseCode()))
+				{
+					imgClrCode.setBackgroundColor(c.getColor());
+					txtClrLine.setBackgroundColor(c.getColor());
+				}
 			}
->>>>>>> origin/marcus-0.7.2
+
 		}
 
 		return convertView;

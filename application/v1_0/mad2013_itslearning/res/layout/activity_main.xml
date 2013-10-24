@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+<<<<<<< HEAD
     android:orientation="vertical" >
     <!--  android:background="@drawable/gradient"  -->
     
@@ -11,6 +12,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginRight="16dp"
+=======
+    android:orientation="vertical" 
+    android:background="#FFF">
+
+    <!-- android:background="@drawable/gradient" -->
+
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/txProgess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Loading feed" />
+
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="16dp"
+        android:animateLayoutChanges="true"
+>>>>>>> Rodrigo
         android:divider="@null"
         android:dividerHeight="0dp"
         android:groupIndicator="@null" />

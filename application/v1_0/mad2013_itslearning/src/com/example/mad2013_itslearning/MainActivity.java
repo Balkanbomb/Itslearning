@@ -1,8 +1,19 @@
 package com.example.mad2013_itslearning;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+=======
+//import itslearning.platform.restApi.sdk.common.entities.UserInfo;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+//import com.mah.aa_studentapp.R;
+
+>>>>>>> Rodrigo
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -12,12 +23,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
+<<<<<<< HEAD
+=======
+import android.widget.ProgressBar;
+import android.widget.TextView;
+>>>>>>> Rodrigo
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
+<<<<<<< HEAD
 import android.widget.ProgressBar;
 import android.widget.TextView;
+=======
+>>>>>>> Rodrigo
 import android.widget.Toast;
 
 /* @author asampe
@@ -36,6 +55,11 @@ import android.widget.Toast;
  * o Fix text overflow in the UI
  * 
  */
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> Rodrigo
 public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener
 {
 	private final String TAG = "RSSTEST";
@@ -44,9 +68,15 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	List<Article> listDataHeader;
 	FeedManager feedManager;
     private //*
+<<<<<<< HEAD
     		//ProgressDialog dialog;
     ProgressBar progBar;
     TextView txProgress;
+=======
+	//ProgressDialog dialog;
+ProgressBar progBar;
+TextView txProgress;
+>>>>>>> Rodrigo
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -56,14 +86,21 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		
 		// Change color actionbar
 		ColorDrawable colorDrawable = new ColorDrawable();
+<<<<<<< HEAD
 		colorDrawable.setColor(0xffdedede);
+=======
+		colorDrawable.setColor(Color.WHITE);
+>>>>>>> Rodrigo
 
 		// custom ActionBar
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(colorDrawable);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		actionBar.setCustomView(R.layout.abs_layout);
+<<<<<<< HEAD
 
+=======
+>>>>>>> Rodrigo
 		//*		
 		//dialog = new ProgressDialog(this);
 		//dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -122,7 +159,12 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		
 		//Toast.makeText(getApplicationContext(), "Downloading " + feedManager.queueSize() + " feeds, please wait" , Toast.LENGTH_LONG).show();
 		feedManager.processFeeds();
+<<<<<<< HEAD
 	}
+=======
+				
+		}
+>>>>>>> Rodrigo
 
 	public void onFeedManagerProgress(int progress, int max)
 	{
@@ -149,10 +191,16 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	@Override
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
+<<<<<<< HEAD
 		
 		Log.i(TAG, "# of articles in aggregated feed: " + articles.size());
 
 		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_SHORT).show();
+=======
+		Log.i(TAG, "# of articles in aggregated feed: " + articles.size());
+		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_SHORT).show();
+			
+>>>>>>> Rodrigo
 		
 		/*
 		 *  sorts the list by date in descending order (using Article.compareTo())

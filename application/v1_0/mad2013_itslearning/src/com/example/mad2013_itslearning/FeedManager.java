@@ -87,19 +87,26 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		feedList.remove(url);
 	}
 	
+	/**
+	 * prepare for re-processing of feeds list;
+	 * clears article list and resets feed queue
+	 * 
+	 */
 	public void reset() {
 		feedQueueCounter = 0;
 		articleList.clear();
 	}
 	
+	
 	public ArrayList<Article> getArticles()
 	{
 		return articleList;
 	}
-
+	
 	@Override
 	public void onFeedComplete(RSSFeed feed)
 	{
+		
 		if (downloadTask.hasException())
 		{
 			Log.e(TAG, downloadTask.getException().toString());
@@ -139,6 +146,10 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		}
 	}
 
+	/**
+	 * downloads articles from one feed at a time, you must add feeds 
+	 * using addFeedURL(String url) before calling this method
+	 */
 	public void processFeeds()
 	{
 		if (this.feedList.isEmpty())
@@ -146,9 +157,12 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			Log.e(TAG, "Feed list is empty, nothing to do!");
 			return;
 		}
-		
+
+		/*
+		 * notify the UI of update
+		 */
 		callbackHandler.onFeedManagerProgress(feedQueueCounter + 1, feedList.size());
-		
+						
 		/* 
 		 * there can only be one task at any time and it can only be used once
 		 */

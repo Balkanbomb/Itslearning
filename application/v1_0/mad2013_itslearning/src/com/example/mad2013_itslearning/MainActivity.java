@@ -63,7 +63,7 @@ TextView txProgress;
 		
 		// Change color actionbar
 		ColorDrawable colorDrawable = new ColorDrawable();
-		colorDrawable.setColor(Color.WHITE);
+		colorDrawable.setColor(0xffeeeeee);
 
 		// custom ActionBar
 		ActionBar actionBar = getActionBar();

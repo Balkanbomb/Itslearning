@@ -83,7 +83,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 
 		// set up the listview
 		feedManager = new FeedManager(this, this);
-
+		
 		listAdapter = new ExpandableListAdapter(this, feedManager.getArticles());
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		expListView.addHeaderView(headerView);

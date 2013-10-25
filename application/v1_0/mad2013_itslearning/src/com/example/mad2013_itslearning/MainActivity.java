@@ -1,4 +1,4 @@
-package com.example.mad2013_itslearning;
+	package com.example.mad2013_itslearning;
 
 //import itslearning.platform.restApi.sdk.common.entities.UserInfo;
 import java.io.FileInputStream;
@@ -65,7 +65,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		setContentView(R.layout.activity_main);
 
 		ColorDrawable colorDrawable = new ColorDrawable();
-		colorDrawable.setColor(Color.WHITE);
+		colorDrawable.setColor(0xffeeeeee);
 
 		// custom ActionBar
 		ActionBar actionBar = getActionBar();

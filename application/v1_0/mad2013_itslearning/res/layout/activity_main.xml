@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" 
-    android:background="#FFF">
+    android:background="@color/grey_light">
 
     <!-- android:background="@drawable/gradient" -->
 
@@ -29,8 +29,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginRight="16dp"
+        
+        android:layout_marginLeft="16dp"
         android:animateLayoutChanges="true"
-        android:divider="@null"
+        android:background="#FFF"
+        
+       android:divider="@null"
         android:dividerHeight="0dp"
         android:groupIndicator="@null" />
 

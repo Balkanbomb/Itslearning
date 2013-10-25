@@ -5,7 +5,8 @@ import org.mcsoxford.rss.RSSReader;
 import android.os.AsyncTask;
 import android.util.Log;
 
-/* @author marcusmansson
+/**
+ * @author marcusmansson
  * 
  * class responsible for retrieving a single rss feed and returning
  * it asynchronously to the registered listener

@@ -149,10 +149,19 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 
 	private void saveCache()
 	{
+		/*
+		 * don't overwrite saved data with nothing 
+		 */
+		if (listAdapter.getList().isEmpty())
+			return;
+		
+		FileOutputStream fos;
+		ObjectOutputStream oos;
+
 		try
 		{
-			FileOutputStream fos = openFileOutput(CACHE_FILENAME, Context.MODE_PRIVATE);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			fos = openFileOutput(CACHE_FILENAME, Context.MODE_PRIVATE);
+			oos = new ObjectOutputStream(fos);
 			oos.writeObject(listAdapter.getList());
 			fos.close();
 		}
@@ -165,21 +174,26 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	@SuppressWarnings("unchecked")
 	private void loadCache()
 	{
+		FileInputStream fis;
+		ObjectInputStream ois;
+		
 		try
 		{
-			FileInputStream fis = openFileInput(CACHE_FILENAME);
-			ObjectInputStream ois = new ObjectInputStream(fis);
+			fis = openFileInput(CACHE_FILENAME);
+			ois = new ObjectInputStream(fis);
+			feedManager.getArticles().clear();
 			feedManager.getArticles().addAll((List<Article>) ois.readObject());
 			listAdapter.notifyDataSetInvalidated();
+			fis.close();
 		}
 		catch (Exception e)
 		{
-			// something is probably wrong with the cache file so let's delete it
-			getBaseContext().getFileStreamPath(CACHE_FILENAME).delete();
-
-			Toast.makeText(getApplicationContext(), "Please refresh", Toast.LENGTH_LONG).show();
 			Log.e(TAG, e.toString());
-			Log.e(TAG, CACHE_FILENAME + " deleted");
+			
+			/*
+			 *  something is probably wrong with the cache file so let's delete it
+			 */
+			getBaseContext().getFileStreamPath(CACHE_FILENAME).delete();
 		}
 	}
 
@@ -195,10 +209,16 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 
 	private void collectData()
 	{
-		// check for cached content, otherwise download feeds
+		/*
+		 *  check for cached content, otherwise download feeds
+		 */
 		if (getBaseContext().getFileStreamPath(CACHE_FILENAME).exists())
 			loadCache();
-		else
+
+		/*
+		 *  in case there was nothing in the cache, or it didn't exist
+		 */
+		if (feedManager.getArticles().isEmpty())
 			refresh();
 	}
 

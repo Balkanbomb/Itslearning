@@ -5,7 +5,8 @@ import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
 import android.util.Log;
 
-/* @author marcusmansson
+/**
+ * @author marcusmansson
  * 
  * FeedManager is responsible for managing several feeds, fetching 
  * them sequentially and creating article objects of the items   

@@ -1,8 +1,18 @@
 package com.example.mad2013_itslearning;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
+
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -27,12 +37,14 @@ import android.util.Log;
 public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 {
 	private final String TAG = "RSSTEST";
+	private final String CACHE_FILENAME = "article_cache.ser";
 	private FeedDownloadTask downloadTask;
 	private FeedManagerDoneListener callbackHandler;
 	private ArrayList<Article> articleList;
 	private ArrayList<String> feedList;
 	private int feedQueueCounter;
-
+	private Context appContext;
+	
 	/*
 	 * the listener must implement these methods
 	 */
@@ -42,8 +54,10 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		public void onFeedManagerProgress(int progress, int max);
 	}
 
-	public FeedManager(FeedManagerDoneListener callbackHandler)
+	public FeedManager(FeedManagerDoneListener callbackHandler, Context appContext)
 	{
+		this.appContext = appContext;
+		
 		try
 		{
 			this.callbackHandler = (FeedManagerDoneListener) callbackHandler;
@@ -57,6 +71,13 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		articleList = new ArrayList<Article>();
 		feedList = new ArrayList<String>();
 		feedQueueCounter = 0;
+		
+		/*
+		 *  check for cached content
+		 */
+		if (appContext.getFileStreamPath(CACHE_FILENAME).exists())
+			loadCache();
+					
 	}
 
 	public void addFeedURL(String url) // throws MalformedURLException
@@ -138,6 +159,16 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			 * again if we just want to refresh articleList.
 			 */
 			feedQueueCounter = 0;
+			
+			/*
+			 * sorts the list by date in descending order
+			 */
+			Collections.sort(articleList);
+			
+			/*
+			 * save data
+			 */
+			saveCache();
 
 	        /*
 			 *  return the complete list of articles to the listener
@@ -176,4 +207,59 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		 */
 		downloadTask.execute(feedList.get(feedQueueCounter++));
 	}
+	
+	private void saveCache()
+	{
+		/*
+		 * don't overwrite saved data with nothing 
+		 */
+		if (articleList.isEmpty())
+			return;
+		
+		FileOutputStream fos;
+		ObjectOutputStream oos;
+
+		try
+		{
+			fos = appContext.openFileOutput(CACHE_FILENAME, Context.MODE_PRIVATE);
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(articleList);
+			fos.close();
+		}
+		catch (Exception e)
+		{
+			Log.e(TAG, e.toString());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void loadCache()
+	{
+		FileInputStream fis;
+		ObjectInputStream ois;
+		
+		try
+		{
+			fis = appContext.openFileInput(CACHE_FILENAME);
+			ois = new ObjectInputStream(fis);
+			articleList.clear();
+			articleList.addAll((List<Article>) ois.readObject());
+			fis.close();
+		}
+		catch (Exception e)
+		{
+			Log.e(TAG, e.toString());
+			
+			/*
+			 *  something is probably wrong with the cache file so let's delete it
+			 */
+			appContext.getFileStreamPath(CACHE_FILENAME).delete();
+		}
+	}
+	
+	public void deleteCache()
+	{
+		appContext.getFileStreamPath(CACHE_FILENAME).delete();
+	}
+
 }

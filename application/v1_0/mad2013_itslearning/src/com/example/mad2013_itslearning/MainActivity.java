@@ -45,10 +45,9 @@ import android.widget.Toast;
  * o Fix text overflow in the UI
  */
 
-public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener
+public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener
 {
 	static final String TAG = "RSSTEST";
-	static final String CACHE_FILENAME = "article_cache.ser";
 
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
@@ -83,25 +82,21 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		this.hideSettingsView();
 
 		// set up the listview
-		feedManager = new FeedManager(this);
+		feedManager = new FeedManager(this, this);
 
 		listAdapter = new ExpandableListAdapter(this, feedManager.getArticles());
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		expListView.addHeaderView(headerView);
 		expListView.setAdapter(listAdapter);
 		expListView.setOnScrollListener(this);
-
-		// listview on child click listener
-		expListView.setOnChildClickListener(new OnChildClickListener() {
-			@Override
-			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
-			{
-				return parent.collapseGroup(groupPosition);
-			}
-		});
-
-		// fetch data from cache or web
-		collectData();
+		expListView.setOnChildClickListener(this);
+		
+		/*
+		 *  in case there was nothing in the cache, or it didn't exist
+		 *  we have to refresh
+		 */
+		if (feedManager.getArticles().isEmpty())
+			refresh();
 	}
 
 	public void onFeedManagerProgress(int progress, int max)
@@ -127,11 +122,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	public void onFeedManagerDone(ArrayList<Article> articles)
 	{
 		/*
-		 * sorts the list by date in descending order
-		 */
-		Collections.sort(articles);
-
-		/*
 		 * display the data in our listview
 		 */
 		listAdapter.notifyDataSetInvalidated();
@@ -141,85 +131,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		dialog.dismiss();
 		dialog = null;
 
-		Log.i(TAG, "# of articles in feed: " + articles.size());
 		Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_LONG).show();
-
-		saveCache();
-	}
-
-	private void saveCache()
-	{
-		/*
-		 * don't overwrite saved data with nothing 
-		 */
-		if (listAdapter.getList().isEmpty())
-			return;
-		
-		FileOutputStream fos;
-		ObjectOutputStream oos;
-
-		try
-		{
-			fos = openFileOutput(CACHE_FILENAME, Context.MODE_PRIVATE);
-			oos = new ObjectOutputStream(fos);
-			oos.writeObject(listAdapter.getList());
-			fos.close();
-		}
-		catch (Exception e)
-		{
-			Log.e(TAG, e.toString());
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private void loadCache()
-	{
-		FileInputStream fis;
-		ObjectInputStream ois;
-		
-		try
-		{
-			fis = openFileInput(CACHE_FILENAME);
-			ois = new ObjectInputStream(fis);
-			feedManager.getArticles().clear();
-			feedManager.getArticles().addAll((List<Article>) ois.readObject());
-			listAdapter.notifyDataSetInvalidated();
-			fis.close();
-		}
-		catch (Exception e)
-		{
-			Log.e(TAG, e.toString());
-			
-			/*
-			 *  something is probably wrong with the cache file so let's delete it
-			 */
-			getBaseContext().getFileStreamPath(CACHE_FILENAME).delete();
-		}
-	}
-
-	private void hideSettingsView()
-	{
-		headerView.findViewById(R.id.headerLayout).setVisibility(View.GONE);
-	}
-
-	private void showSettingsView()
-	{
-		headerView.findViewById(R.id.headerLayout).setVisibility(View.VISIBLE);
-	}
-
-	private void collectData()
-	{
-		/*
-		 *  check for cached content, otherwise download feeds
-		 */
-		if (getBaseContext().getFileStreamPath(CACHE_FILENAME).exists())
-			loadCache();
-
-		/*
-		 *  in case there was nothing in the cache, or it didn't exist
-		 */
-		if (feedManager.getArticles().isEmpty())
-			refresh();
 	}
 
 	private void refresh()
@@ -238,7 +150,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=16066&PersonId=71004&CustomerId=719&Guid=52845be1dfae034819b676d6d2b18733&Culture=sv-SE");
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18190&PersonId=94952&CustomerId=719&Guid=96721ee137e0c918227093aa54f16f80&Culture=en-GB");
 			feedManager.addFeedURL("http://www.mah.se/Nyheter/RSS/Anslagstavla-fran-Malmo-hogskola/");
-			//feedManager.addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
+			feedManager.addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
 		}
 
 		feedManager.reset();
@@ -254,8 +166,18 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	public void clearAllData(View v)
 	{
 		feedManager.reset();
-		getBaseContext().getFileStreamPath(CACHE_FILENAME).delete();
+		feedManager.deleteCache();
 		listAdapter.notifyDataSetInvalidated();
+	}
+
+	private void hideSettingsView()
+	{
+		headerView.findViewById(R.id.headerLayout).setVisibility(View.GONE);
+	}
+
+	private void showSettingsView()
+	{
+		headerView.findViewById(R.id.headerLayout).setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -270,5 +192,11 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 			showSettingsView();
 		else
 			hideSettingsView();
+	}
+
+	@Override
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
+	{
+		return parent.collapseGroup(groupPosition);
 	}
 }

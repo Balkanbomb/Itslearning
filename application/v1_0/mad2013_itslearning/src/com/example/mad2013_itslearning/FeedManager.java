@@ -34,7 +34,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	private int feedQueueCounter;
 
 	/*
-	 * the listener must implement this methods
+	 * the listener must implement these methods
 	 */
 	public interface FeedManagerDoneListener
 	{

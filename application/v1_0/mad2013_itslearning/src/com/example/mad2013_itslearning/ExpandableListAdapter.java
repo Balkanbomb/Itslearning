@@ -122,8 +122,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 			TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
 			TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
 			TextView lblListCode = (TextView) convertView.findViewById(R.id.lblListCode);
-			ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
 			TextView txtClrLine = (TextView) convertView.findViewById(R.id.clrLine);
+			ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
 
 			lblListHeader.setText(headerTitle.getArticleHeader());
 			lblListHeaderDate.setText(headerTitle.getArticleDate().toString());

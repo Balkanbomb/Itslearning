@@ -1,22 +1,11 @@
-	package com.example.mad2013_itslearning;
+package com.example.mad2013_itslearning;
 
-//import itslearning.platform.restApi.sdk.common.entities.UserInfo;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-//import com.mah.aa_studentapp.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -26,13 +15,19 @@ import android.widget.TextView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
 
-/**
+/*
  * @author asampe, marcusmansson
  * 
  * 
- * HISTORY: 
+ * HISTORY:
+ * 0.7.4
+ *  o moved all file handling to FileManager
+ *  o code and comments cleaned up
+ *   
  * 0.7.3
  *  o merged two branches (unknown version) with 0.7.2 
+ *  o course colors in the UI 
+ *  o fixed text overflow in the UI
  *  
  * 0.7.2 
  * 	o added saving/loading of articles to/from cache
@@ -40,14 +35,11 @@ import android.widget.Toast;
  * 	o removed unused code
  * 
  *  
- * TODO: 
- * o Set course colors and update course codes in the UI 
- * o Fix text overflow in the UI
  */
 
 public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener
 {
-	static final String TAG = "RSSTEST";
+	static final String TAG = "MainActivity";
 
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
@@ -83,14 +75,14 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 
 		// set up the listview
 		feedManager = new FeedManager(this, this);
-		
+
 		listAdapter = new ExpandableListAdapter(this, feedManager.getArticles());
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		expListView.addHeaderView(headerView);
 		expListView.setAdapter(listAdapter);
 		expListView.setOnScrollListener(this);
 		expListView.setOnChildClickListener(this);
-		
+
 		/*
 		 *  in case there was nothing in the cache, or it didn't exist
 		 *  we have to refresh
@@ -136,16 +128,20 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 
 	private void refresh()
 	{
+		/*
+		 * close all expanded childviews, otherwise they will incorrectly 
+		 * linger in the UI even after we invalidate the dataset
+		 */
 		int count = listAdapter.getGroupCount();
 		for (int i = 0; i < count; i++)
 			expListView.collapseGroup(i);
-		
+
+		/*
+		 * as soon as we add feeds to feedManager, queueSize is no longer 0,  
+		 * therefore this will only be done once
+		 */
 		if (feedManager.queueSize() == 0)
 		{
-			/*
-			 * as soon as we add feeds to feedManager, queueSize is no longer 0,  
-			 * therefore this will only be done once
-			 */
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=16066&PersonId=71004&CustomerId=719&Guid=52845be1dfae034819b676d6d2b18733&Culture=sv-SE");
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18190&PersonId=94952&CustomerId=719&Guid=96721ee137e0c918227093aa54f16f80&Culture=en-GB");

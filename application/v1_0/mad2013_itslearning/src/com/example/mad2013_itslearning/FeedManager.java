@@ -7,11 +7,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
-
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -36,7 +33,7 @@ import android.util.Log;
  */
 public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 {
-	private final String TAG = "RSSTEST";
+	private final String TAG = "FeedManager";
 	private final String CACHE_FILENAME = "article_cache.ser";
 	private FeedDownloadTask downloadTask;
 	private FeedManagerDoneListener callbackHandler;
@@ -76,8 +73,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		 *  check for cached content
 		 */
 		if (appContext.getFileStreamPath(CACHE_FILENAME).exists())
-			loadCache();
-					
+			loadCache();			
 	}
 
 	public void addFeedURL(String url) // throws MalformedURLException

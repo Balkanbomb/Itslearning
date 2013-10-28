@@ -21,7 +21,7 @@ import android.widget.Toast;
  * 
  * HISTORY:
  * 0.7.4
- *  o moved all file handling to FileManager
+ *  o moved all file handling to FeedManager
  *  o code and comments cleaned up
  *   
  * 0.7.3
@@ -37,7 +37,8 @@ import android.widget.Toast;
  *  
  */
 
-public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener
+public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, 
+	OnScrollListener, OnChildClickListener
 {
 	static final String TAG = "MainActivity";
 
@@ -70,7 +71,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		txProgress.setVisibility(TextView.GONE);
 
 		// create settings view and hide it
-		headerView = getLayoutInflater().inflate(R.layout.list_header, null);
+		headerView = getLayoutInflater().inflate(R.layout.itsl_list_header, null);
 		this.hideSettingsView();
 
 		// set up the listview

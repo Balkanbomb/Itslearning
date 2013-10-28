@@ -32,7 +32,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		theCourses.add(new Course("3", context.getResources().getColor(R.color.red)));
 		theCourses.add(new Course("4", context.getResources().getColor(R.color.green)));
 		theCourses.add(new Course("5", context.getResources().getColor(R.color.orange)));
-
 	}
 
 	public List<Article> getList()
@@ -66,7 +65,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 			if (convertView == null)
 			{
 				LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = infalInflater.inflate(R.layout.list_item, null);
+				convertView = infalInflater.inflate(R.layout.itsl_list_item, null);
 			}
 
 			TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
@@ -114,7 +113,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 			if (convertView == null)
 			{
 				LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = infalInflater.inflate(R.layout.list_group, null);
+				convertView = infalInflater.inflate(R.layout.itsl_list_group, null);
 			}
 
 			Article headerTitle = (Article) getGroup(groupPosition);

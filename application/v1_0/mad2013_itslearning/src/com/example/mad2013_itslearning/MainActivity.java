@@ -69,11 +69,11 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		txProgress = (TextView) findViewById(R.id.txProgess);
 		progBar.setVisibility(ProgressBar.GONE);
 		txProgress.setVisibility(TextView.GONE);
-
+		
 		// create settings view and hide it
 		headerView = getLayoutInflater().inflate(R.layout.itsl_list_header, null);
 		this.hideSettingsView();
-
+		
 		// set up the listview
 		feedManager = new FeedManager(this, this);
 
@@ -119,8 +119,10 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		 */
 		listAdapter.notifyDataSetInvalidated();
 
+		/*
 		progBar.setVisibility(ProgressBar.GONE);
 		txProgress.setVisibility(TextView.GONE);
+		*/
 		dialog.dismiss();
 		dialog = null;
 
@@ -146,7 +148,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=16066&PersonId=71004&CustomerId=719&Guid=52845be1dfae034819b676d6d2b18733&Culture=sv-SE");
 			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18190&PersonId=94952&CustomerId=719&Guid=96721ee137e0c918227093aa54f16f80&Culture=en-GB");
-			feedManager.addFeedURL("http://www.mah.se/Nyheter/RSS/Anslagstavla-fran-Malmo-hogskola/");
 			feedManager.addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
 		}
 
@@ -176,7 +177,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		headerView.findViewById(R.id.headerLayout).setVisibility(View.VISIBLE);
 	}
-
+	
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
 	{
@@ -187,7 +188,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		if (expListView.getFirstVisiblePosition() == 0 && scrollState == OnScrollListener.SCROLL_STATE_IDLE)
 			showSettingsView();
-		else
+		else if (expListView.getFirstVisiblePosition() == 1 && scrollState == OnScrollListener.SCROLL_STATE_IDLE)
 			hideSettingsView();
 	}
 

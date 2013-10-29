@@ -100,6 +100,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
+	
+
 	{
 		if (convertView == null)
 		{
@@ -113,20 +115,26 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
 		TextView lblListCode = (TextView) convertView.findViewById(R.id.lblListCode);
 		ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
+		ImageView imgPointer = (ImageView) convertView.findViewById(R.id.icPointer);
 		TextView txtClrLine = (TextView) convertView.findViewById(R.id.clrLine);
 		
 		lblListHeader.setText(headerTitle.getArticleHeader());
 		lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
 		lblListCode.setText(headerTitle.getArticleCourseCode());
 		
+		// RODRIGO int lineCount = lblListHeaderText.getLineCount();
+		
+		
 		if (headerTitle.isTextVisible())
 		{
 			lblListHeaderText.setVisibility(View.VISIBLE);
 			lblListHeaderText.setText(headerTitle.getArticleSummary());
+			imgPointer.setVisibility(View.VISIBLE);
 		}
 		else
 		{
 			lblListHeaderText.setVisibility(View.GONE);
+			imgPointer.setVisibility(View.GONE);
 		}
 		
 		/* 
@@ -142,6 +150,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 					}
 		}
 		
+		/* RODRIGO
+		 
+		if (lineCount>2)
+		{
+			imgPointer.setVisibility(View.GONE);
+		}
+		else
+		{
+			imgPointer.setVisibility(View.VISIBLE);
+		}
+				
+		*/
+		
+				
 				
 		/*
 		 * filter example

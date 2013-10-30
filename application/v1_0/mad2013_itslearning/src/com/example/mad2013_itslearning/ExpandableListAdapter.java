@@ -122,20 +122,45 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 		lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
 		lblListCode.setText(headerTitle.getArticleCourseCode());
 		
-		// RODRIGO int lineCount = lblListHeaderText.getLineCount();
+
 		
+
 		
+		/*
+		 * If the summary text is visible = not expanded
+		 */
 		if (headerTitle.isTextVisible())
 		{
-			lblListHeaderText.setVisibility(View.VISIBLE);
+			if (headerTitle.getArticleSummary().equals(headerTitle.getArticleText()))
+			{
+				convertView.setEnabled(false);
+				imgPointer.setVisibility(View.GONE);
+			}
+			else
+			{
+				lblListHeaderText.setVisibility(View.VISIBLE);
+				lblListHeaderText.setText(headerTitle.getArticleSummary());
+				convertView.setEnabled(true);
+				imgPointer.setVisibility(View.VISIBLE);
+			}
+			
+			
+			
+		/*	lblListHeaderText.setVisibility(View.VISIBLE);
 			lblListHeaderText.setText(headerTitle.getArticleSummary());
-			imgPointer.setVisibility(View.VISIBLE);
+			imgPointer.setVisibility(View.VISIBLE);*/
 		}
 		else
 		{
 			lblListHeaderText.setVisibility(View.GONE);
 			imgPointer.setVisibility(View.GONE);
+
 		}
+			
+
+			
+	
+
 		
 		/* 
 		 *  Choose the right color
@@ -149,19 +174,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 						txtClrLine.setBackgroundColor(c.getColor());				
 					}
 		}
-		
-		/* RODRIGO
-		 
-		if (lineCount>2)
-		{
-			imgPointer.setVisibility(View.GONE);
-		}
-		else
-		{
-			imgPointer.setVisibility(View.VISIBLE);
-		}
-				
-		*/
+
 		
 				
 				
@@ -201,6 +214,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	public void onGroupExpanded(int groupPosition)
 	{
 		super.onGroupExpanded(groupPosition);
+
 		Article headerTitle = (Article) getGroup(groupPosition);
 		headerTitle.setTextVisible(false);
 	}

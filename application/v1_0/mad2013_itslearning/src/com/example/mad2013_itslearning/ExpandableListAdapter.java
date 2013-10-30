@@ -107,6 +107,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
+	
+
 	{
 		if (!_listDataHeader.isEmpty())
 		{
@@ -151,6 +153,84 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 				}
 			}
 
+<<<<<<< HEAD
+=======
+		Article headerTitle = (Article) getGroup(groupPosition);
+		TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+		TextView lblListHeaderDate = (TextView) convertView.findViewById(R.id.lblListHeaderDate);
+		TextView lblListHeaderText = (TextView) convertView.findViewById(R.id.lblListHeaderText);
+		TextView lblListCode = (TextView) convertView.findViewById(R.id.lblListCode);
+		ImageView imgClrCode = (ImageView) convertView.findViewById(R.id.clrCode);
+		ImageView imgPointer = (ImageView) convertView.findViewById(R.id.icPointer);
+		TextView txtClrLine = (TextView) convertView.findViewById(R.id.clrLine);
+		
+		lblListHeader.setText(headerTitle.getArticleHeader());
+		lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
+		lblListCode.setText(headerTitle.getArticleCourseCode());
+		
+
+		
+
+		
+		/*
+		 * If the summary text is visible = not expanded
+		 */
+		if (headerTitle.isTextVisible())
+		{
+			if (headerTitle.getArticleSummary().equals(headerTitle.getArticleText()))
+			{
+				convertView.setEnabled(false);
+				imgPointer.setVisibility(View.GONE);
+			}
+			else
+			{
+				lblListHeaderText.setVisibility(View.VISIBLE);
+				lblListHeaderText.setText(headerTitle.getArticleSummary());
+				convertView.setEnabled(true);
+				imgPointer.setVisibility(View.VISIBLE);
+			}
+			
+			
+			
+		/*	lblListHeaderText.setVisibility(View.VISIBLE);
+			lblListHeaderText.setText(headerTitle.getArticleSummary());
+			imgPointer.setVisibility(View.VISIBLE);*/
+		}
+		else
+		{
+			lblListHeaderText.setVisibility(View.GONE);
+			imgPointer.setVisibility(View.GONE);
+
+		}
+			
+
+			
+	
+
+		
+		/* 
+		 *  Choose the right color
+		 */
+				
+		for (Course c : theCourses)
+		{
+			if (headerTitle.getArticleCourseCode().equals(c.getCourseCode()))
+					{
+						imgClrCode.setBackgroundColor(c.getColor());
+						txtClrLine.setBackgroundColor(c.getColor());				
+					}
+		}
+
+		
+				
+				
+		/*
+		 * filter example
+		 */
+		if (headerTitle.getArticleCourseCode().equals("320B"))
+		{
+			//convertView.setVisibility(View.GONE);	
+>>>>>>> Rodrigo
 		}
 
 		return convertView;
@@ -186,11 +266,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	{
 		super.onGroupExpanded(groupPosition);
 
+<<<<<<< HEAD
 		if (!_listDataHeader.isEmpty())
 		{
 			Article headerTitle = (Article) getGroup(groupPosition);
 			headerTitle.setTextVisible(false);
 		}
+=======
+		Article headerTitle = (Article) getGroup(groupPosition);
+		headerTitle.setTextVisible(false);
+>>>>>>> Rodrigo
 	}
 
 	@Override

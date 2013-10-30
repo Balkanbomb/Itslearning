@@ -28,9 +28,15 @@
         android:id="@+id/lvExp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+<<<<<<< HEAD
         android:layout_marginRight="16dp"
         
         android:layout_marginLeft="16dp"
+=======
+        android:layout_marginRight="8dp"
+        
+        android:layout_marginLeft="8dp"
+>>>>>>> Rodrigo
         android:animateLayoutChanges="true"
         android:background="#FFF"
         

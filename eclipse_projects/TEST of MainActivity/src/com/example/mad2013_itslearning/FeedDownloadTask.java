@@ -5,8 +5,7 @@ import org.mcsoxford.rss.RSSReader;
 import android.os.AsyncTask;
 import android.util.Log;
 
-/**
- * @author marcusmansson
+/* @author marcusmansson
  * 
  * class responsible for retrieving a single rss feed and returning
  * it asynchronously to the registered listener
@@ -74,6 +73,7 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed>
 			/*
 			 * always release resources
 			 */
+
 			reader.close();
 		}
 
@@ -86,7 +86,7 @@ public class FeedDownloadTask extends AsyncTask<String, Void, RSSFeed>
 	protected void onPostExecute(RSSFeed feed)
 	{
 		/*
-		 * pass the result back to listener
+		 * pass the result back to the caller
 		 */
 		callbackHandler.onFeedComplete(feed);
 	}

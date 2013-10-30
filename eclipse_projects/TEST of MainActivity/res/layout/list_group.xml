@@ -73,9 +73,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:gravity="center_vertical"
+<<<<<<< HEAD:eclipse_projects/TEST of MainActivity/res/layout/list_group.xml
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+=======
                 android:textColor="@color/grey"
                 android:textSize="12sp"
                 android:textStyle="italic" />
+>>>>>>> Rodrigo:application/v1_0/mad2013_itslearning/res/layout/list_group.xml
 
             <TextView
                 android:id="@+id/lblListHeaderText"
@@ -88,6 +93,30 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/grey_dark" />
 
+<<<<<<< HEAD:eclipse_projects/TEST of MainActivity/res/layout/list_group.xml
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/blue" />
+
+        <TextView
+            android:id="@+id/lblListHeaderDate"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+			android:textColor="@color/grey_dark"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/lblListHeaderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="5sp"
+            android:textColor="@color/black"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginBottom="16dp"/>
+=======
             <ImageView
                 android:id="@+id/icPointer"
                 android:layout_width="16dp"
@@ -95,6 +124,7 @@
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/ic_pointer_down" />
         </LinearLayout>
+>>>>>>> Rodrigo:application/v1_0/mad2013_itslearning/res/layout/list_group.xml
     </LinearLayout>
 
 </LinearLayout>

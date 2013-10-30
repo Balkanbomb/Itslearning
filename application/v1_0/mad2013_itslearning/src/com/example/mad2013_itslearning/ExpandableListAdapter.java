@@ -3,6 +3,7 @@ package com.example.mad2013_itslearning;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,14 +129,32 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 			lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
 			lblListCode.setText(headerTitle.getArticleCourseCode());
 
+			// If the summary is visible
 			if (headerTitle.isTextVisible())
 			{
 				lblListHeaderText.setVisibility(View.VISIBLE);
 				lblListHeaderText.setText(headerTitle.getArticleSummary());
+				//txtClrLine.setVisibility(View.VISIBLE);
 			}
 			else
 			{
 				lblListHeaderText.setVisibility(View.GONE);
+				//txtClrLine.setVisibility(View.GONE);
+			}
+			
+			/*
+			 * If the summary contains all the text - make it impossible to expand list
+			 * setClickable(true) gives the effect that nothing happens when I click the view
+			 */
+			
+			if (headerTitle.getArticleSummary().equals(headerTitle.getArticleText()))
+			{
+				convertView.setClickable(true);
+				//txtClrLine.setVisibility(View.GONE);
+			}
+			else
+			{
+				convertView.setClickable(false);
 			}
 
 			/* 

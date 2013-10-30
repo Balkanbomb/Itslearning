@@ -71,6 +71,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			// Restore preferences
 			SharedPreferences settings = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 			latestUpdate = new Date(settings.getLong("latestUpdate", 0));
+			latestUpdate = new Date(1382932800000L);
 		}
 		catch (ClassCastException e)
 		{
@@ -209,7 +210,6 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 				}
 				
 				Log.i(TAG, newArticles.size() + " new articles, that will be sent to notification class");
-
 				
 			}
 			catch (Exception e)

@@ -220,7 +220,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadCache()
+	public void loadCache()
 	{
 		/*
 		 *  check for cache file

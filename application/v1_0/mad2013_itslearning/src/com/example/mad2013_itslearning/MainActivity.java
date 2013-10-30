@@ -1,22 +1,15 @@
-	package com.example.mad2013_itslearning;
+package com.example.mad2013_itslearning;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import org.mcsoxford.rss.RSSItem;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -60,8 +53,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	ProgressBar progBar;
 	TextView txProgress;
 	View headerView;
-	private NotificationManager nm;
-	AlarmManager am;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -69,8 +60,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		contextOfApplication = this;
-
-		//am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
 		ColorDrawable colorDrawable = new ColorDrawable();
 		colorDrawable.setColor(0xffeeeeee);
@@ -106,6 +95,8 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		 *  in case there was nothing in the cache, or it didn't exist
 		 *  we have to refresh
 		 */
+		feedManager.loadCache();
+		
 		if (feedManager.getArticles().isEmpty())
 			refresh();
 	}

@@ -88,7 +88,6 @@ public class TimeAlarm extends IntentService implements FeedManager.FeedManagerD
 	{
 		//invoking the default notification service
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-		
 		mBuilder.setContentTitle("New Message");
 		mBuilder.setTicker("New Itslearning post");
 		mBuilder.setSmallIcon(R.drawable.ic_launcher);

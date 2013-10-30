@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/clrCode"
+        android:layout_width="16dp"
+        android:layout_height="match_parent"
+        android:background="#009FE8" />
+
+
+
+<LinearLayout
+    android:id="@+id/llHeader"
+    android:layout_toRightOf="@id/clrCode"
+    android:layout_width="432dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="32dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/lblListHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#151515" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/blue" />
+
+    <TextView
+        android:id="@+id/lblListHeaderDate"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+
+        android:textColor="#BFBFBF"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/lblListHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        android:textColor="#151515"
+        android:textSize="14sp" />
+
+</LinearLayout>
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.mad2013_itslearning;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import org.mcsoxford.rss.RSSItem;
@@ -25,7 +26,6 @@ import android.widget.TextView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
 
-
 /*
  * @author asampe, marcusmansson
  * 
@@ -48,8 +48,7 @@ import android.widget.Toast;
  *  
  */
 
-public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, 
-	OnScrollListener, OnChildClickListener
+public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener
 {
 	static final String TAG = "MainActivity";
 	public static Context contextOfApplication;
@@ -70,7 +69,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		contextOfApplication = this;
-		
+
 		//am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
 		ColorDrawable colorDrawable = new ColorDrawable();
@@ -86,11 +85,11 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		txProgress = (TextView) findViewById(R.id.txProgess);
 		progBar.setVisibility(ProgressBar.GONE);
 		txProgress.setVisibility(TextView.GONE);
-		
+
 		// create settings view and hide it
 		headerView = getLayoutInflater().inflate(R.layout.itsl_list_header, null);
 		this.hideSettingsView();
-		
+
 		// set up the listview
 		feedManager = new FeedManager(this, this);
 
@@ -100,9 +99,9 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		expListView.setAdapter(listAdapter);
 		expListView.setOnScrollListener(this);
 		expListView.setOnChildClickListener(this);
-		
+
 		setRepeatingAlarm();
-		
+
 		/*
 		 *  in case there was nothing in the cache, or it didn't exist
 		 *  we have to refresh
@@ -110,12 +109,13 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		if (feedManager.getArticles().isEmpty())
 			refresh();
 	}
-	
-	public static Context getContextOfApplication(){
-	    return contextOfApplication;
+
+	public static Context getContextOfApplication()
+	{
+		return contextOfApplication;
 	}
-	
-	public void onFeedManagerProgress(int progress, int max)
+
+	public void onFeedManagerProgress(FeedManager fm, int progress, int max)
 	{
 		// set up progress dialog if there isn't one
 		if (dialog == null)
@@ -135,7 +135,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	}
 
 	@Override
-	public void onFeedManagerDone(ArrayList<Article> articles)
+	public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles)
 	{
 		/*
 		 * display the data in our listview
@@ -200,7 +200,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		headerView.findViewById(R.id.headerLayout).setVisibility(View.VISIBLE);
 	}
-	
+
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
 	{
@@ -220,20 +220,12 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		return parent.collapseGroup(groupPosition);
 	}
-	
-	
-	public void setRepeatingAlarm() {
-		am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-	      Intent intent = new Intent(this, TimeAlarm.class);
-     
-	      //Kan det räcka så här. Här lägger vi till det som skall visas så tt det följer med intenten till TimeAlarm
-	      //intent.putStringArrayListExtra("Lista", events);
-	      
-	      PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
-	        intent, PendingIntent.FLAG_CANCEL_CURRENT);
-	      am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-	        (5000), pendingIntent);
-	      
-	      Log.i(TAG, "Calling Alarm...");
-	     }
+
+	public void setRepeatingAlarm()
+	{
+		Intent intent = new Intent(this, TimeAlarm.class);
+		PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60000 * 5, pintent);
+	}
 }

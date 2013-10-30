@@ -4,16 +4,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -38,23 +34,21 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 {
 	private final String TAG = "FeedManager";
 	private final String CACHE_FILENAME = "article_cache.ser";
-	private final String PREFS_NAME = "data_storage.dat";
 	private FeedDownloadTask downloadTask;
 	private FeedManagerDoneListener callbackHandler;
 	private ArrayList<Article> articleList;
 	private ArrayList<String> feedList;
 	private int feedQueueCounter;
 	private Context appContext;
-	private Date latestUpdate;
 
 	/*
 	 * the listener must implement these methods
 	 */
 	public interface FeedManagerDoneListener
 	{
-		public void onFeedManagerDone(ArrayList<Article> articles);
+		public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles);
 
-		public void onFeedManagerProgress(int progress, int max);
+		public void onFeedManagerProgress(FeedManager fm, int progress, int max);
 	}
 
 	public FeedManager(FeedManagerDoneListener callbackHandler, Context context)
@@ -67,36 +61,10 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		try
 		{
 			this.callbackHandler = (FeedManagerDoneListener) callbackHandler;
-
-			// Restore preferences
-			SharedPreferences settings = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-			latestUpdate = new Date(settings.getLong("latestUpdate", 0));
-			latestUpdate = new Date(1382932800000L);
 		}
 		catch (ClassCastException e)
 		{
 			throw new ClassCastException(callbackHandler.toString() + " must implement FeedManagerDoneListener");
-		}
-
-		/*
-		 *  check for cached content
-		 */
-		if (appContext.getFileStreamPath(CACHE_FILENAME).exists())
-		{
-			try
-			{
-				loadCache();
-			}
-			catch (Exception e)
-			{
-				Log.e(TAG, e.toString());
-
-				/*
-				 *  something is probably wrong with the cache file so let's delete it
-				 */
-				appContext.getFileStreamPath(CACHE_FILENAME).delete();
-			}
-
 		}
 	}
 
@@ -193,24 +161,6 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			try
 			{
 				saveCache();
-
-				SharedPreferences settings = appContext.getSharedPreferences(PREFS_NAME, 0);
-				SharedPreferences.Editor editor = settings.edit();
-				editor.putLong("latestUpdate", articleList.get(0).getArticlePubDate().getTime());
-				editor.commit();
-				
-				ArrayList<Article> newArticles = new ArrayList<Article>();
-				for (Article a : articleList)
-				{
-					if (a.getArticlePubDate().compareTo(this.latestUpdate) > 0)
-					{
-						newArticles.add(a);
-						Log.i(TAG, a.getArticleDate() + " is newer than " + this.latestUpdate.toString());
-					}
-				}
-				
-				Log.i(TAG, newArticles.size() + " new articles, that will be sent to notification class");
-				
 			}
 			catch (Exception e)
 			{
@@ -221,7 +171,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			 *  return the complete list of articles to the listener
 			 *  when all items in the feed queue are processed
 			 */
-			callbackHandler.onFeedManagerDone(getArticles());
+			callbackHandler.onFeedManagerDone(this, getArticles());
 		}
 	}
 
@@ -240,7 +190,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		/*
 		 * notify the UI of update
 		 */
-		callbackHandler.onFeedManagerProgress(feedQueueCounter + 1, feedList.size());
+		callbackHandler.onFeedManagerProgress(this, feedQueueCounter + 1, feedList.size());
 
 		/* 
 		 * there can only be one task at any time and it can only be used once
@@ -270,13 +220,31 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadCache() throws Exception
+	private void loadCache()
 	{
-		FileInputStream fis = appContext.openFileInput(CACHE_FILENAME);
-		ObjectInputStream ois = new ObjectInputStream(fis);
-		articleList.clear();
-		articleList.addAll((List<Article>) ois.readObject());
-		fis.close();
+		/*
+		 *  check for cache file
+		 */
+		if (appContext.getFileStreamPath(CACHE_FILENAME).exists())
+		{
+			try
+			{
+				FileInputStream fis = appContext.openFileInput(CACHE_FILENAME);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				articleList.clear();
+				articleList.addAll((List<Article>) ois.readObject());
+				fis.close();
+			}
+			catch (Exception e)
+			{
+				Log.e(TAG, e.toString());
+
+				/*
+				 *  something is probably wrong with the cache file so let's delete it
+				 */
+				appContext.getFileStreamPath(CACHE_FILENAME).delete();
+			}
+		}
 	}
 
 	public void deleteCache()

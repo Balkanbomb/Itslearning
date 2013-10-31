@@ -1,7 +1,9 @@
 package com.example.mad2013_itslearning;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -71,8 +73,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		backgroundUpdateIntent = PendingIntent.getService(
 				getApplicationContext(), 0, 
 				new Intent(this, TimeAlarm.class), 0);
-
-		stopBackgroundUpdates();
 		
 		/*
 		 * custom ActionBar
@@ -121,8 +121,53 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		 */
 		if (feedManager.getArticles().isEmpty())
 			refresh();
+		
+		
+		for (String title : getFeedObjects().keySet())
+		{
+			Log.i(TAG, "Filter list has key: " + title);
+		}
+	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * 
+	 */
+	
+	public class FeedObject {
+		public ArrayList<Article> articles;
+		public FeedObject()
+		{
+			articles = new ArrayList<Article>();
+		}
 	}
 
+	public HashMap<String, FeedObject> getFeedObjects() {
+		HashMap<String, FeedObject> foList = new HashMap<String, FeedObject>();
+		
+		for (Article a : feedManager.getArticles())
+		{
+			FeedObject fo;
+			
+			if (foList.containsKey(a.getArticleCourseCode()))
+			{
+				fo = foList.get(a.getArticleCourseCode());
+			}
+			else
+			{
+				fo = new FeedObject();
+				foList.put(a.getArticleCourseCode(), fo);
+			}
+			
+			fo.articles.add(a);
+		}
+		
+		return foList;
+	}
+	
+	/* 
+	 * 
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	public void onFeedManagerProgress(FeedManager fm, int progress, int max)
 	{
 		// set up progress dialog if there isn't one
@@ -218,10 +263,16 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	}
 
 	
-	public void onDestroy()
+	public void onPause()
 	{
-		super.onDestroy();
-		startBackgroundUpdates();
+		super.onPause();
+		
+		Log.i(TAG, "Paused: Setting up background updates");
+
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.setRepeating(AlarmManager.RTC_WAKEUP, 
+				System.currentTimeMillis() + UPDATE_INTERVAL, 
+				UPDATE_INTERVAL, backgroundUpdateIntent);
 		
 		/*
 		 * Remember when we last had this view opened 
@@ -230,19 +281,11 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 				new Date(System.currentTimeMillis()));
 	}
 	
-	private void startBackgroundUpdates()
+	public void onResume()
 	{
-		Log.i(TAG, "Setting up background updates");
-
-		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		alarm.setRepeating(AlarmManager.RTC_WAKEUP, 
-				System.currentTimeMillis() + UPDATE_INTERVAL, 
-				UPDATE_INTERVAL, backgroundUpdateIntent);
-	}
-	
-	private void stopBackgroundUpdates()
-	{
-		Log.i(TAG, "Stopping background updates");
+		super.onResume();
+		
+		Log.i(TAG, "Resumed: Stopping background updates");
 
 		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		alarm.cancel(backgroundUpdateIntent);

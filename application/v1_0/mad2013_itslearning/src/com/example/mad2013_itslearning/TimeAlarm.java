@@ -2,107 +2,106 @@ package com.example.mad2013_itslearning;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-public class TimeAlarm extends BroadcastReceiver implements FeedManager.FeedManagerDoneListener {
+public class TimeAlarm extends IntentService implements FeedManager.FeedManagerDoneListener
+{
+	private static final String TAG = "TimeAlarm";
+	private Date latestUpdate;
+	
+	public TimeAlarm()
+	{
+		super(TAG);
+	}
 
-	private final String PREFS_NAME = "data_storage.dat";
-
-	public void onReceive(Context context, Intent intent) {
-
-		if (context.getApplicationContext() == null)
+	@Override
+	protected void onHandleIntent(Intent intent)
+	{
+		if (getApplicationContext() != null)
 		{
-			Log.i("ALARM", "Context context is null");
+			Log.i(TAG, "Updating content...");
 			
-		}
-		
-		Context appContext = MainActivity.getContextOfApplication();
-		if (appContext != null)
-		{
-			SharedPreferences settings = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-			Date latestUpdate = new Date(settings.getLong("latestUpdate", 0));
-			Log.i("ALARM", latestUpdate.toString());
+			latestUpdate = Util.getLatestUpdate(getApplicationContext());
+			FeedManager feedManager = new FeedManager(this, this);
+			feedManager.processFeeds();
 		}
 		else
 		{
-			Log.i("ALARM", "MainActivity.getContextOfApplication(); is null");
-
+			Log.e(TAG, "getApplicationContext(); is null");
 		}
-/*		
-		String messageInfo = intent.getStringExtra("MessageInfo");
-		ArrayList<String> ListInfo = intent.getStringArrayListExtra("Lista");
-		 //invoking the default notification service
-   		NotificationCompat.Builder mBuilder=
-   				new NotificationCompat.Builder(context);
-   		
-   		mBuilder.setContentTitle("New Message");
-   		mBuilder.setContentText(messageInfo);
-   		mBuilder.setTicker("New Itslearning Message ");
-   		mBuilder.setSmallIcon(R.drawable.ic_launcher);
-   		
-   		// Add Big View Specific Configuration 
-   	 NotificationCompat.InboxStyle inboxStyle =
-	             new NotificationCompat.InboxStyle();
-   	 
-   	 // Sets a title for the Inbox style big view
-      inboxStyle.setBigContentTitle("Big Title Details:");
-      // Moves events into the big view
-      for (int i=0; i < ListInfo.size(); i++) {
-
-         inboxStyle.addLine(ListInfo.get(i));
-      }
-      mBuilder.setStyle(inboxStyle);
-   		
-   		//Creates an explicit intent in the app
-   		Intent resultIntent = new Intent(context, MainActivity.class); 
-   		
-   		
-   		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-   		stackBuilder.addParentStack(MainActivity.class);
-   		
-   		//ads the intent that starts the activity to the top of the stack
-   		stackBuilder.addNextIntent(resultIntent);
-   		PendingIntent resultPendingIntent =
-   		         stackBuilder.getPendingIntent(
-   		            0,
-   		            PendingIntent.FLAG_UPDATE_CURRENT
-   		         );
-   		
-   		mBuilder.setContentIntent(resultPendingIntent);
-
-   		NotificationManager  mNotificationManager = 
-   				(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-   	      
-   	     // notificationId allows you to update the notification later on
-   	      //nm.notify( 0, mBuilder.build());
-   	      
-   	   
-
-   	int mId=0;
-	// mId allows you to update the notification later on.
-   	mNotificationManager.notify(mId, mBuilder.build());
-*/
 	}
 
-	public void onFeedManagerDone(ArrayList<Article> articles)
+	public void onFeedManagerProgress(FeedManager fm, int progress, int max)
 	{
-		// TODO Auto-generated method stub
-		
+		/*
+		 * we don't care about progress here
+		 */
 	}
 
-	public void onFeedManagerProgress(int progress, int max)
+	public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles)
 	{
-		// TODO Auto-generated method stub
-		
+		if (!articles.isEmpty())
+		{
+			Util.setLatestUpdate(getApplicationContext(), articles.get(0).getArticlePubDate());
+			
+			ArrayList<Article> newArticles = new ArrayList<Article>();
+			for (Article a : articles)
+				if (a.getArticlePubDate().compareTo(latestUpdate) > 0)
+					newArticles.add(a);
+	
+			createNotification(newArticles);
+		}
+		else
+		{
+			Log.e(TAG, fm.getClass().toString() + " returned 0 articles, are we online?");
+		}
+	}
+
+	private void createNotification(ArrayList<Article> articles)
+	{
+		//invoking the default notification service
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+		mBuilder.setContentTitle("New Message");
+		mBuilder.setTicker("New Itslearning post");
+		mBuilder.setSmallIcon(R.drawable.ic_launcher);
+		mBuilder.setAutoCancel(true);
+
+		// Add Big View Specific Configuration 
+		NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+		// Sets a title for the Inbox style big view
+		inboxStyle.setBigContentTitle("News from Itslearning");
+
+		// Moves events into the big view
+		for (Article a : articles)
+			inboxStyle.addLine(a.getArticleHeader());
+
+		mBuilder.setStyle(inboxStyle);
+
+		// Creates an explicit intent in the app
+		Intent resultIntent = new Intent(this, MainActivity.class);
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(MainActivity.class);
+
+		// ads the intent that starts the activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		mBuilder.setContentIntent(resultPendingIntent);
+
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(0, mBuilder.build());
+
 	}
 }

@@ -1,18 +1,13 @@
-	package com.example.mad2013_itslearning;
+package com.example.mad2013_itslearning;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.mcsoxford.rss.RSSItem;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
-
 
 /*
  * @author asampe, marcusmansson
@@ -48,12 +42,11 @@ import android.widget.Toast;
  *  
  */
 
-public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, 
-	OnScrollListener, OnChildClickListener
+public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener
 {
 	static final String TAG = "MainActivity";
-	public static Context contextOfApplication;
-
+	static final long UPDATE_INTERVAL = 1800000; // 30 minutes
+	
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
 	FeedManager feedManager;
@@ -61,22 +54,29 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	ProgressBar progBar;
 	TextView txProgress;
 	View headerView;
-	private NotificationManager nm;
-	AlarmManager am;
+	PendingIntent backgroundUpdateIntent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		contextOfApplication = this;
 		
-		//am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		/*
+		 * set up the repeating task of updating data in the background 
+		 * (but stop it while the app is running)
+		 */
+		backgroundUpdateIntent = PendingIntent.getService(
+				getApplicationContext(), 0, 
+				new Intent(this, TimeAlarm.class), 0);
 
+		stopBackgroundUpdates();
+		
+		/*
+		 * custom ActionBar
+		 */
 		ColorDrawable colorDrawable = new ColorDrawable();
 		colorDrawable.setColor(0xffeeeeee);
-
-		// custom ActionBar
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(colorDrawable);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -86,36 +86,36 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		txProgress = (TextView) findViewById(R.id.txProgess);
 		progBar.setVisibility(ProgressBar.GONE);
 		txProgress.setVisibility(TextView.GONE);
-		
-		// create settings view and hide it
-		headerView = getLayoutInflater().inflate(R.layout.itsl_list_header, null);
-		this.hideSettingsView();
-		
-		// set up the listview
-		feedManager = new FeedManager(this, this);
 
+		/*
+		 *  create settings view and hide it
+		 */
+		headerView = getLayoutInflater().inflate(R.layout.itsl_list_header, null);
+		hideSettingsView();
+
+		feedManager = new FeedManager(this, getApplicationContext());
+
+		/*
+		 *  set up the listview
+		 */
 		listAdapter = new ExpandableListAdapter(this, feedManager.getArticles());
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		expListView.addHeaderView(headerView);
 		expListView.setAdapter(listAdapter);
 		expListView.setOnScrollListener(this);
 		expListView.setOnChildClickListener(this);
-		
-		setRepeatingAlarm();
+
+		feedManager.loadCache();
 		
 		/*
-		 *  in case there was nothing in the cache, or it didn't exist
+		 *  in case there is nothing in the cache, or it doesn't exist
 		 *  we have to refresh
 		 */
 		if (feedManager.getArticles().isEmpty())
 			refresh();
 	}
-	
-	public static Context getContextOfApplication(){
-	    return contextOfApplication;
-	}
-	
-	public void onFeedManagerProgress(int progress, int max)
+
+	public void onFeedManagerProgress(FeedManager fm, int progress, int max)
 	{
 		// set up progress dialog if there isn't one
 		if (dialog == null)
@@ -135,7 +135,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	}
 
 	@Override
-	public void onFeedManagerDone(ArrayList<Article> articles)
+	public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles)
 	{
 		/*
 		 * display the data in our listview
@@ -161,18 +161,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		int count = listAdapter.getGroupCount();
 		for (int i = 0; i < count; i++)
 			expListView.collapseGroup(i);
-
-		/*
-		 * as soon as we add feeds to feedManager, queueSize is no longer 0,  
-		 * therefore this will only be done once
-		 */
-		if (feedManager.queueSize() == 0)
-		{
-			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
-			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=16066&PersonId=71004&CustomerId=719&Guid=52845be1dfae034819b676d6d2b18733&Culture=sv-SE");
-			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18190&PersonId=94952&CustomerId=719&Guid=96721ee137e0c918227093aa54f16f80&Culture=en-GB");
-			feedManager.addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
-		}
 
 		feedManager.reset();
 		feedManager.processFeeds();
@@ -200,7 +188,7 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		headerView.findViewById(R.id.headerLayout).setVisibility(View.VISIBLE);
 	}
-	
+
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
 	{
@@ -220,20 +208,30 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		return parent.collapseGroup(groupPosition);
 	}
+
 	
+	public void onDestroy()
+	{
+		super.onDestroy();
+		startBackgroundUpdates();
+	}
 	
-	public void setRepeatingAlarm() {
-		am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-	      Intent intent = new Intent(this, TimeAlarm.class);
-     
-	      //Kan det räcka så här. Här lägger vi till det som skall visas så tt det följer med intenten till TimeAlarm
-	      //intent.putStringArrayListExtra("Lista", events);
-	      
-	      PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
-	        intent, PendingIntent.FLAG_CANCEL_CURRENT);
-	      am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-	        (5000), pendingIntent);
-	      
-	      Log.i(TAG, "Calling Alarm...");
-	     }
+	private void startBackgroundUpdates()
+	{
+		Log.i(TAG, "Setting up background updates");
+
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.setRepeating(AlarmManager.RTC_WAKEUP, 
+				System.currentTimeMillis() + UPDATE_INTERVAL, 
+				UPDATE_INTERVAL, backgroundUpdateIntent);
+	}
+	
+	private void stopBackgroundUpdates()
+	{
+		Log.i(TAG, "Stopping background updates");
+
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.cancel(backgroundUpdateIntent);
+	}
+	
 }

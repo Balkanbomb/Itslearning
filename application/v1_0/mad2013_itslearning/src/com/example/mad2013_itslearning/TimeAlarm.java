@@ -15,17 +15,20 @@ public class TimeAlarm extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		String messageInfo = intent.getStringExtra("MessageInfo");
-		ArrayList<String> ListInfo = intent.getStringArrayListExtra("Lista");
+		//String messageInfo = intent.getStringExtra("MessageInfo");
+		//ArrayList<String> ListInfo = intent.getStringArrayListExtra("Lista");
+		
 		 //invoking the default notification service
    		NotificationCompat.Builder mBuilder=
    				new NotificationCompat.Builder(context);
    		
+   		
+   		//test();
    		mBuilder.setContentTitle("New Message");
-   		mBuilder.setContentText(messageInfo);
+   		mBuilder.setContentText("TEST");
    		mBuilder.setTicker("New Itslearning Message ");
    		mBuilder.setSmallIcon(R.drawable.ic_launcher);
-   		
+   		mBuilder.setAutoCancel(true);
    		/* Add Big View Specific Configuration */
    	 NotificationCompat.InboxStyle inboxStyle =
 	             new NotificationCompat.InboxStyle();
@@ -33,10 +36,12 @@ public class TimeAlarm extends BroadcastReceiver {
    	 // Sets a title for the Inbox style big view
       inboxStyle.setBigContentTitle("Big Title Details:");
       // Moves events into the big view
-      for (int i=0; i < ListInfo.size(); i++) {
-
-         inboxStyle.addLine(ListInfo.get(i));
-      }
+      
+//      for (int i=0; i < ListInfo.size(); i++) {
+//
+//         inboxStyle.addLine(ListInfo.get(i));
+//      }
+      
       mBuilder.setStyle(inboxStyle);
    		
    		//Creates an explicit intent in the app

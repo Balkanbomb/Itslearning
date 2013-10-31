@@ -1,13 +1,11 @@
-package com.example.mad2013_itslearning;
+package com.example.tabs;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
@@ -39,16 +37,17 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	private FeedDownloadTask downloadTask;
 	private FeedManagerDoneListener callbackHandler;
 	private ArrayList<Article> articleList;
-	private Context appContext;
-	private int feedQueueCounter;
 	private ArrayList<String> feedList;
-		
+	private int feedQueueCounter;
+	private Context appContext;
+
 	/*
 	 * the listener must implement these methods
 	 */
 	public interface FeedManagerDoneListener
 	{
 		public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles);
+
 		public void onFeedManagerProgress(FeedManager fm, int progress, int max);
 	}
 
@@ -58,15 +57,14 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		articleList = new ArrayList<Article>();
 		feedList = new ArrayList<String>();
 		feedQueueCounter = 0;
-		
+
 		try
 		{
 			this.callbackHandler = (FeedManagerDoneListener) callbackHandler;
 		}
 		catch (ClassCastException e)
 		{
-			throw new ClassCastException(callbackHandler.toString()
-					+ " must implement FeedManagerDoneListener");
+			throw new ClassCastException(callbackHandler.toString() + " must implement FeedManagerDoneListener");
 		}
 	}
 
@@ -89,6 +87,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	/**
 	 * prepare for re-processing of feeds list; clears article list and resets
 	 * feed queue
+	 * 
 	 */
 	public void reset()
 	{
@@ -104,6 +103,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	@Override
 	public void onFeedComplete(RSSFeed feed)
 	{
+
 		if (downloadTask.hasException())
 		{
 			Log.e(TAG, downloadTask.getException().toString());
@@ -112,7 +112,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		{
 			Article article;
 			String feedDescription = feed.getTitle();
-			
+
 			for (RSSItem rssItem : feed.getItems())
 			{
 				article = new Article(rssItem);
@@ -121,7 +121,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			}
 		}
 
-		if (++feedQueueCounter < feedList.size())
+		if (feedQueueCounter < this.feedList.size())
 		{
 			/*
 			 *  process next feed in queue
@@ -189,7 +189,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		 * in case we want to get all feeds again later (i.e. to refresh), that's
 		 * why we use a counter to keep track of where in the queue we are 
 		 */
-		downloadTask.execute(feedList.get(feedQueueCounter));
+		downloadTask.execute(feedList.get(feedQueueCounter++));
 	}
 
 	private void saveCache() throws Exception
@@ -246,4 +246,5 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		Log.i(TAG, "Deleting file: " + appContext.getFileStreamPath(CACHE_FILENAME).toString());
 		appContext.getFileStreamPath(CACHE_FILENAME).delete();
 	}
+
 }

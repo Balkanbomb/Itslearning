@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.AlarmManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,14 +19,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.ExpandableListView.OnChildClickListener;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -44,12 +55,20 @@ public class MainActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	PendingIntent backgroundUpdateIntent;
+	static final long UPDATE_INTERVAL = 1800000; // 30 minutes
 	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		backgroundUpdateIntent = PendingIntent.getService(
+				getApplicationContext(), 0, 
+				new Intent(this, TimeAlarm.class), 0);
+
+		stopBackgroundUpdates();
 
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
@@ -138,7 +157,8 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public int getCount() {
-			// Show 3 total pages.
+			
+			//return FeedManager.getCorses().size();
 			return 5;
 		}
 
@@ -147,11 +167,11 @@ public class MainActivity extends FragmentActivity implements
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.title_section1).toUpperCase(l);
+				return "All Courses";
 			case 1:
-				return getString(R.string.title_section2).toUpperCase(l);
+				return "section 2";
 			case 2:
-				return getString(R.string.title_section3).toUpperCase(l);
+				return "section 3";
 			case 3:
 				return "section 4";
 			case 4:
@@ -165,17 +185,23 @@ public class MainActivity extends FragmentActivity implements
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
 	 */
-	public static class DummySectionFragment extends Fragment {
+	public static class DummySectionFragment extends Fragment implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener {
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
 		 */
 		public static final String ARG_SECTION_NUMBER = "section_number";
+		static final String TAG = "MainActivity";
+		
 		
 		ExpandableListAdapter listAdapter;
 	    ExpandableListView expListView;
-	    List<Article> listDataHeader;
-	    HashMap<Article, List<String>> listDataChild;
+	    FeedManager feedManager;
+		ProgressDialog dialog;
+		ProgressBar progBar;
+		TextView txProgress;
+		View headerView;
+		PendingIntent backgroundUpdateIntent;
 	 
 
 
@@ -189,30 +215,149 @@ public class MainActivity extends FragmentActivity implements
 					container, false);
 			TextView dummyTextView = (TextView) rootView
 					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
+//			dummyTextView.setText(Integer.toString(getArguments().getInt(
+//					ARG_SECTION_NUMBER)));
 			
+			
+			progBar = (ProgressBar) rootView.findViewById(R.id.progress);
+			txProgress = (TextView) rootView.findViewById(R.id.txProgess);
+			progBar.setVisibility(ProgressBar.GONE);
+			txProgress.setVisibility(TextView.GONE);
 			
 			
 		    // get the listview
-	        expListView = (ExpandableListView) rootView.findViewById(R.id.lv_Exp);
+	        expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
 	 
 	        // preparing list data
-	        prepareListData();
-	 
-	        listAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listDataChild);
+	        //prepareListData();
+	        headerView = getLayoutInflater(savedInstanceState).inflate(R.layout.itsl_list_header, null); //possible Error svaeInstanceState
+			hideSettingsView();
+			
+			feedManager = new FeedManager(this, rootView.getContext()); //possible error getAplicationContext() -> getContext()
+			
+			listAdapter = new ExpandableListAdapter(this.getActivity(), feedManager.getArticles());
+			expListView.addHeaderView(headerView);
+			expListView.setAdapter(listAdapter);
+			expListView.setOnScrollListener(this);
+			expListView.setOnChildClickListener(this);
+			
+			//listAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listDataChild);
 	 
 	        // setting list adapter
 	        expListView.setAdapter(listAdapter);
 	 	
-	        
+	        feedManager.loadCache();
+			
+			/*
+			 *  in case there is nothing in the cache, or it doesn't exist
+			 *  we have to refresh
+			 */
+			if (feedManager.getArticles().isEmpty())
+				refresh();
 	        
 	        
 	        
 			return rootView;
 		}
+		public void onFeedManagerProgress(FeedManager fm, int progress, int max)
+		{
+			// set up progress dialog if there isn't one
+			if (dialog == null)
+			{
+				dialog = new ProgressDialog(this.getActivity());		//possible error getActivity;
+				dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				dialog.setMessage("Downloading...");
+				dialog.show();
+			}
+			dialog.setProgress(progress);
+			dialog.setMax(max);
+
+			/*
+			progBar.setProgress(progress);
+			progBar.setMax(max);
+			*/
+		}
+
+		@Override
+		public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles)
+		{
+			/*
+			 * display the data in our listview
+			 */
+			listAdapter.notifyDataSetInvalidated();
+
+			/*
+			progBar.setVisibility(ProgressBar.GONE);
+			txProgress.setVisibility(TextView.GONE);
+			*/
+			dialog.dismiss();
+			dialog = null;
+
+			//Toast.makeText(getApplicationContext(), "" + articles.size() + " articles", Toast.LENGTH_LONG).show();
+		}
+
+		private void refresh()
+		{
+			/*
+			 * close all expanded childviews, otherwise they will incorrectly 
+			 * linger in the UI even after we invalidate the dataset
+			 */
+			int count = listAdapter.getGroupCount();
+			for (int i = 0; i < count; i++)
+				expListView.collapseGroup(i);
+
+			feedManager.reset();
+			feedManager.processFeeds();
+		}
+
+		public void refreshButtonClicked(View v)
+		{
+			refresh();
+			hideSettingsView();
+		}
+
+		public void clearAllData(View v)
+		{
+			feedManager.reset();
+			feedManager.deleteCache();
+			listAdapter.notifyDataSetInvalidated();
+		}
+
+		private void hideSettingsView()
+		{
+			headerView.findViewById(R.id.headerLayout).setVisibility(View.GONE);
+		}
+
+		private void showSettingsView()
+		{
+			headerView.findViewById(R.id.headerLayout).setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+		{
+		}
+
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState)
+		{
+			if (expListView.getFirstVisiblePosition() == 0 && scrollState == OnScrollListener.SCROLL_STATE_IDLE)
+				showSettingsView();
+			else if (expListView.getFirstVisiblePosition() == 1 && scrollState == OnScrollListener.SCROLL_STATE_IDLE)
+				hideSettingsView();
+		}
+
+		@Override
+		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
+		{
+			return parent.collapseGroup(groupPosition);
+		}
+
 		
-		private void prepareListData() {
+
+		
+
+		/*private void prepareListData() {
 	        listDataHeader = new ArrayList<Article>();
 	        listDataChild = new HashMap<Article, List<String>>();
 	 
@@ -240,9 +385,30 @@ public class MainActivity extends FragmentActivity implements
 	        listDataChild.put(listDataHeader.get(2), comingSoon);
 	        listDataChild.put(listDataHeader.get(3), comingSoon);
 	    }
+*/
+	}
+	public void onDestroy()
+	{
+		super.onDestroy();
+		startBackgroundUpdates();
+	}
+	private void startBackgroundUpdates()
+	{
+		//Log.i(TAG, "Setting up background updates");
 
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.setRepeating(AlarmManager.RTC_WAKEUP, 
+				System.currentTimeMillis() + UPDATE_INTERVAL, 
+				UPDATE_INTERVAL, backgroundUpdateIntent);
 	}
 	
+	private void stopBackgroundUpdates()
+	{
+		//Log.i(TAG, "Stopping background updates");
+
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.cancel(backgroundUpdateIntent);
+	}
 	   
 
 }

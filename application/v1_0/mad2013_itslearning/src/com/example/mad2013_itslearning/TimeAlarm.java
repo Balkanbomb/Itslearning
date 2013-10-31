@@ -50,8 +50,6 @@ public class TimeAlarm extends IntentService implements FeedManager.FeedManagerD
 	{
 		if (!articles.isEmpty())
 		{
-			Util.setLatestUpdate(getApplicationContext(), articles.get(0).getArticlePubDate());
-			
 			ArrayList<Article> newArticles = new ArrayList<Article>();
 			for (Article a : articles)
 				if (a.getArticlePubDate().compareTo(latestUpdate) > 0)

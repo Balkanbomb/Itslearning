@@ -246,5 +246,4 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		Log.i(TAG, "Deleting file: " + appContext.getFileStreamPath(CACHE_FILENAME).toString());
 		appContext.getFileStreamPath(CACHE_FILENAME).delete();
 	}
-
 }

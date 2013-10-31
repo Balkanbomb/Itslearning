@@ -1,8 +1,10 @@
 package com.example.mad2013_itslearning;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 {
 	private Context _context;
 	private List<Article> _listDataHeader; // header titles
-
+	private Date lastUpdate;
+	
 	// Temporary for testing - create arraylist of courses
 	ArrayList<Course> theCourses = new ArrayList<Course>();
 
@@ -25,7 +28,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 	{
 		this._context = context;
 		this._listDataHeader = listDataHeader;
-
+		this.lastUpdate = Util.getLatestUpdate(_context);
+		
 		// Trying to get the colors from our xml file
 		theCourses.add(new Course("1", context.getResources().getColor(R.color.blue)));
 		theCourses.add(new Course("2", context.getResources().getColor(R.color.yellow)));
@@ -127,8 +131,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 
 			lblListHeader.setText(headerTitle.getArticleHeader());
 			lblListHeaderDate.setText(headerTitle.getArticleDate().toString());
-			lblListCode.setText(headerTitle.getArticleCourseCode());
-
+			
+			/*
+			 * find out if this article is new since last time we started the app
+			 */
+			if (lastUpdate.getTime() < headerTitle.getArticlePubDate().getTime())
+				lblListCode.setText("NEW");
+			else
+				lblListCode.setText("");
+				
 			/*
 			 * If the summary text is visible = not expanded
 			 */
@@ -153,9 +164,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 			}
 			else
 			{
-
 				convertView.setClickable(false);
-
 			}
 
 			/*

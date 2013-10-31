@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -44,8 +45,8 @@ import android.widget.Toast;
 public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener
 {
 	static final String TAG = "MainActivity";
-	public static Context contextOfApplication;
-
+	static final long UPDATE_INTERVAL = 1800000; // 30 minutes
+	
 	ExpandableListAdapter listAdapter;
 	ExpandableListView expListView;
 	FeedManager feedManager;
@@ -53,18 +54,29 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	ProgressBar progBar;
 	TextView txProgress;
 	View headerView;
+	PendingIntent backgroundUpdateIntent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		contextOfApplication = this;
+		
+		/*
+		 * set up the repeating task of updating data in the background 
+		 * (but stop it while the app is running)
+		 */
+		backgroundUpdateIntent = PendingIntent.getService(
+				getApplicationContext(), 0, 
+				new Intent(this, TimeAlarm.class), 0);
 
+		stopBackgroundUpdates();
+		
+		/*
+		 * custom ActionBar
+		 */
 		ColorDrawable colorDrawable = new ColorDrawable();
 		colorDrawable.setColor(0xffeeeeee);
-
-		// custom ActionBar
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(colorDrawable);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -75,13 +87,17 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		progBar.setVisibility(ProgressBar.GONE);
 		txProgress.setVisibility(TextView.GONE);
 
-		// create settings view and hide it
+		/*
+		 *  create settings view and hide it
+		 */
 		headerView = getLayoutInflater().inflate(R.layout.itsl_list_header, null);
-		this.hideSettingsView();
+		hideSettingsView();
 
-		// set up the listview
-		feedManager = new FeedManager(this, this);
+		feedManager = new FeedManager(this, getApplicationContext());
 
+		/*
+		 *  set up the listview
+		 */
 		listAdapter = new ExpandableListAdapter(this, feedManager.getArticles());
 		expListView = (ExpandableListView) findViewById(R.id.lvExp);
 		expListView.addHeaderView(headerView);
@@ -89,21 +105,14 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		expListView.setOnScrollListener(this);
 		expListView.setOnChildClickListener(this);
 
-		setRepeatingAlarm();
-
-		/*
-		 *  in case there was nothing in the cache, or it didn't exist
-		 *  we have to refresh
-		 */
 		feedManager.loadCache();
 		
+		/*
+		 *  in case there is nothing in the cache, or it doesn't exist
+		 *  we have to refresh
+		 */
 		if (feedManager.getArticles().isEmpty())
 			refresh();
-	}
-
-	public static Context getContextOfApplication()
-	{
-		return contextOfApplication;
 	}
 
 	public void onFeedManagerProgress(FeedManager fm, int progress, int max)
@@ -153,18 +162,6 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		for (int i = 0; i < count; i++)
 			expListView.collapseGroup(i);
 
-		/*
-		 * as soon as we add feeds to feedManager, queueSize is no longer 0,  
-		 * therefore this will only be done once
-		 */
-		if (feedManager.queueSize() == 0)
-		{
-			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
-			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=16066&PersonId=71004&CustomerId=719&Guid=52845be1dfae034819b676d6d2b18733&Culture=sv-SE");
-			feedManager.addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18190&PersonId=94952&CustomerId=719&Guid=96721ee137e0c918227093aa54f16f80&Culture=en-GB");
-			feedManager.addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
-		}
-
 		feedManager.reset();
 		feedManager.processFeeds();
 	}
@@ -212,11 +209,29 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		return parent.collapseGroup(groupPosition);
 	}
 
-	public void setRepeatingAlarm()
+	
+	public void onDestroy()
 	{
-		Intent intent = new Intent(this, TimeAlarm.class);
-		PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
-		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60000 * 5, pintent);
+		super.onDestroy();
+		startBackgroundUpdates();
 	}
+	
+	private void startBackgroundUpdates()
+	{
+		Log.i(TAG, "Setting up background updates");
+
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.setRepeating(AlarmManager.RTC_WAKEUP, 
+				System.currentTimeMillis() + UPDATE_INTERVAL, 
+				UPDATE_INTERVAL, backgroundUpdateIntent);
+	}
+	
+	private void stopBackgroundUpdates()
+	{
+		Log.i(TAG, "Stopping background updates");
+
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarm.cancel(backgroundUpdateIntent);
+	}
+	
 }

@@ -70,21 +70,8 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 
 	public void addFeedURL(String url) // throws MalformedURLException
 	{
-		/*
-		 *  even though we use simple strings, we should throw  
-		 *  exception if the string is not a valid url for sake 
-		 *  of finding errors
-		try
-		{
-			URL test = new URL(url);
-		}
-		catch (MalformedURLException e)
-		{
-			throw e;
-		}
-		*/
-
-		this.feedList.add(url);
+		Log.i(TAG, url);
+		feedList.add(url);
 	}
 
 	public int queueSize()
@@ -155,9 +142,6 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			 */
 			Collections.sort(articleList);
 
-			/*
-			 * save data
-			 */
 			try
 			{
 				saveCache();
@@ -181,10 +165,13 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	 */
 	public void processFeeds()
 	{
-		if (this.feedList.isEmpty())
+		if (feedList.isEmpty())
 		{
-			Log.e(TAG, "Feed list is empty, nothing to do!");
-			return;
+			Log.e(TAG, "Feed list is empty, adding some feeds:");
+			addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
+			addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=16066&PersonId=71004&CustomerId=719&Guid=52845be1dfae034819b676d6d2b18733&Culture=sv-SE");
+			addFeedURL("https://mah.itslearning.com/Bulletin/RssFeed.aspx?LocationType=1&LocationID=18190&PersonId=94952&CustomerId=719&Guid=96721ee137e0c918227093aa54f16f80&Culture=en-GB");
+			addFeedURL("https://mah.itslearning.com/Dashboard/NotificationRss.aspx?LocationType=1&LocationID=18178&PersonId=25776&CustomerId=719&Guid=d50eaf8a1781e4c8c7cdc9086d1248b1&Culture=sv-SE");
 		}
 
 		/*
@@ -217,6 +204,10 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			oos.writeObject(articleList);
 			fos.close();
 		}
+		else
+		{
+			Log.e(TAG, "Nothing to save, are we online?");
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -227,6 +218,9 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		 */
 		if (appContext.getFileStreamPath(CACHE_FILENAME).exists())
 		{
+			/*
+			 * load data
+			 */
 			try
 			{
 				FileInputStream fis = appContext.openFileInput(CACHE_FILENAME);
@@ -242,13 +236,14 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 				/*
 				 *  something is probably wrong with the cache file so let's delete it
 				 */
-				appContext.getFileStreamPath(CACHE_FILENAME).delete();
+				deleteCache();
 			}
 		}
 	}
 
 	public void deleteCache()
 	{
+		Log.i(TAG, "Deleting file: " + appContext.getFileStreamPath(CACHE_FILENAME).toString());
 		appContext.getFileStreamPath(CACHE_FILENAME).delete();
 	}
 

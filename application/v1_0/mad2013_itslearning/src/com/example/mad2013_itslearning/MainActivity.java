@@ -1,6 +1,8 @@
 package com.example.mad2013_itslearning;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -106,6 +108,12 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		expListView.setOnChildClickListener(this);
 
 		feedManager.loadCache();
+
+		for (String url : Util.getBrowserBookmarks(getApplicationContext()))
+		{
+			Log.i(TAG, "Got URL from bookmarks: " + url);
+			feedManager.addFeedURL(url);
+		}
 		
 		/*
 		 *  in case there is nothing in the cache, or it doesn't exist
@@ -214,6 +222,12 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 	{
 		super.onDestroy();
 		startBackgroundUpdates();
+		
+		/*
+		 * Remember when we last had this view opened 
+		 */
+		Util.setLatestUpdate(getApplicationContext(), 
+				new Date(System.currentTimeMillis()));
 	}
 	
 	private void startBackgroundUpdates()

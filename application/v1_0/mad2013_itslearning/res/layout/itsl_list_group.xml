@@ -73,7 +73,7 @@
                     
                     android:singleLine="true"
                     android:ellipsize="start"
-                    android:maxLength="2"
+                    android:maxLength="3"
                     
                      />
             </RelativeLayout>

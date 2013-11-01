@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -16,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ExpandableListView;
@@ -46,9 +46,10 @@ import android.widget.Toast;
  *  
  */
 
-public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener
+public class MainActivity extends Activity implements FeedManager.FeedManagerDoneListener,
+	OnScrollListener, OnChildClickListener, OnClickListener
 {
-	static final String TAG = "MainActivity";
+	static final String TAG = "ITSL_fragment";
 	static final long UPDATE_INTERVAL = 1800000; // 30 minutes
 	
 	ExpandableListAdapter listAdapter;
@@ -93,6 +94,8 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		 *  create settings view and hide it
 		 */
 		headerView = getLayoutInflater().inflate(R.layout.itsl_list_header, null);
+		headerView.findViewById(R.id.button1).setOnClickListener(this);
+		headerView.findViewById(R.id.button2).setOnClickListener(this);
 		hideSettingsView();
 
 		feedManager = new FeedManager(this, getApplicationContext());
@@ -219,17 +222,21 @@ public class MainActivity extends Activity implements FeedManager.FeedManagerDon
 		feedManager.processFeeds();
 	}
 
-	public void refreshButtonClicked(View v)
+	@Override
+	public void onClick(View v)
 	{
-		refresh();
-		hideSettingsView();
-	}
-
-	public void clearAllData(View v)
-	{
-		feedManager.reset();
-		feedManager.deleteCache();
-		listAdapter.notifyDataSetInvalidated();
+		switch (v.getId())
+		{
+			case R.id.button1:
+				refresh();
+				hideSettingsView();
+				break;
+			case R.id.button2:
+				feedManager.reset();
+				feedManager.deleteCache();
+				listAdapter.notifyDataSetInvalidated();
+				break;
+		}
 	}
 
 	private void hideSettingsView()

@@ -175,7 +175,7 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setIcon(R.drawable.ic_launcher)
+					.setIcon(R.drawable.ic_itsl_b)
 					.setCustomView(R.layout.itsl_tab)
 					.setTabListener(this));
 		}

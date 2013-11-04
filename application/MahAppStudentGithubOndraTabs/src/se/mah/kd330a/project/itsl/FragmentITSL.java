@@ -4,34 +4,26 @@ import se.mah.kd330a.project.R;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.SortedSet;
 
-import se.mah.kd330a.project.itsl.SectionsPagerAdapter;
 import se.mah.kd330a.project.itsl.FeedManager.FeedManagerDoneListener;
-
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.AlarmManager;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /*
  * @author asampe, marcusmansson
@@ -72,10 +64,11 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 	static final String TAG = "ITSL_fragment";
 	static final long UPDATE_INTERVAL = 1000 * 120; //every other minute
 	// 1800000 = 30 minutes
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	public SectionsPagerAdapter mSectionsPagerAdapter;
 	FeedManager feedManager;
 	ViewPager mViewPager;
 	PendingIntent backgroundUpdateIntent;
+	public HashMap<String, FeedObject> foList = new HashMap<String, FeedObject>();
 
 
 	@Override
@@ -94,6 +87,8 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 
 		
 		feedManager = new FeedManager(this, appContext);
+		feedManager.loadCache();
+		
 	}
 
 	public void onPause()
@@ -113,19 +108,18 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 		Util.setLatestUpdate(getActivity().getApplicationContext(), 
 				new Date(System.currentTimeMillis()));
 	}
-	
+
 	public void onResume()
 	{
 		super.onResume();
 		
 		Log.i(TAG, "Resumed: Stopping background updates");
-
 		AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 		alarm.cancel(backgroundUpdateIntent);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
 	{
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_screen_itsl, container, false);
 
@@ -179,54 +173,72 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 					.setCustomView(R.layout.itsl_tab)
 					.setTabListener(this));
 		}
-	
-//		progBar = (ProgressBar) rootView.findViewById(R.id.progress);
-//		txProgress = (TextView) rootView.findViewById(R.id.txProgess);
-//		progBar.setVisibility(ProgressBar.GONE);
-//		txProgress.setVisibility(TextView.GONE);
-//		
-//		/*
-//		 *  create settings view and hide it
-//		 */
-//		headerView = inflater.inflate(R.layout.itsl_list_header, null);
-//		headerView.findViewById(R.id.button1).setOnClickListener(this);
-//		headerView.findViewById(R.id.button2).setOnClickListener(this);
-//		hideSettingsView();
-//
-//		/*
-//		 *  set up the listview
-//		 */
-//		listAdapter = new ExpandableListAdapter(getActivity(), feedManager.getArticles());
-//		expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
-//		expListView.addHeaderView(headerView);
-//		expListView.setAdapter(listAdapter);
-//		expListView.setOnScrollListener(this);
-//		expListView.setOnChildClickListener(this);
-//
-//		feedManager.loadCache();
-//
-//		for (String url : Util.getBrowserBookmarks(getActivity().getApplicationContext()))
-//		{
-//			Log.i(TAG, "Got URL from bookmarks: " + url);
-//			feedManager.addFeedURL(url);
-//		}
-//		
-//		/*
-//		 *  in case there is nothing in the cache, or it doesn't exist
-//		 *  we have to refresh
-//		 */
-//		if (feedManager.getArticles().isEmpty())
-//			refresh();
-//		
-//		
-//		for (String title : getFeedObjects().keySet())
-//		{
-//			Log.i(TAG, "Filter list has key: " + title);
-//		}
-//
+		
 		return rootView;
 	}
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+		public SectionsPagerAdapter(FragmentManager fm) {
+			
+			super(fm);
+
+		}
+		@Override
+		public int getItemPosition (Object object){
+			return POSITION_NONE;
+		}
+		@Override
+		public Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a DummySectionFragment (defined as a static inner class
+			// below) with the page number as its lone argument.
+			ArrayList<String> keyList = new ArrayList<String>();
+			for (String title : getFeedObjects().keySet())
+			{
+				keyList.add(title);
+				Log.i(TAG, "Filter list has key: " + title);
+			}
+			
+			Fragment fragment = new TabFragment();
+			Bundle args = new Bundle();
+			args.putInt(TabFragment.ARG_SECTION_NUMBER, position + 1);
+			args.putString(TabFragment.ARG_COURSE_KEY, keyList.get(position));
+			fragment.setArguments(args);
+			return fragment;
+		}
+
+		@Override
+		public int getCount() {
+			
+			if (getFeedObjects().keySet().size()==0){
+				Log.i("Value", Integer.toString(getFeedObjects().keySet().size()));
+				return 0;
+				}
+			else{
+				Log.i("Value", Integer.toString(getFeedObjects().keySet().size()));
+				return getFeedObjects().keySet().size();
+			}
+			
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			Locale l = Locale.getDefault();
+			switch (position) {
+			case 0:
+				return "All Courses";
+			case 1:
+				return "section 2";
+			case 2:
+				return "section 3";
+			case 3:
+				return "section 4";
+			case 4:
+				return "fifth really really long tab";
+			}
+			return null;
+		}
+	}
 	public class FeedObject {
 		public ArrayList<Article> articles;
 		public FeedObject()
@@ -236,11 +248,10 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 	}
 
 	public HashMap<String, FeedObject> getFeedObjects() {
-		HashMap<String, FeedObject> foList = new HashMap<String, FeedObject>();
-		
+		FeedObject fo;
+		Boolean changed = false;
 		for (Article a : feedManager.getArticles())
 		{
-			FeedObject fo;
 			
 			if (foList.containsKey(a.getArticleCourseCode()))
 			{
@@ -251,10 +262,15 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 				fo = new FeedObject();
 				foList.put(a.getArticleCourseCode(), fo);
 			}
-			
-			fo.articles.add(a);
+			if(!fo.articles.contains(a)){
+				fo.articles.add(a);
+				changed = true;}
 		}
-		
+		if(changed){
+			Log.i(TAG, Integer.toString(foList.size()));
+			mSectionsPagerAdapter.notifyDataSetChanged(); 
+		}
+		Log.i("foListSize", Integer.toString(foList.size()));
 		return foList;
 	}
 
@@ -284,7 +300,11 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 
 	@Override
 	public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles) {
-		// TODO Auto-generated method stub
+		//mSectionsPagerAdapter.startUpdate(mViewPager);
+		//mSectionsPagerAdapter.finishUpdate(mViewPager);
+		//mSectionsPagerAdapter.notifyDataSetChanged();
+		getFeedObjects();
+
 		
 	}
 

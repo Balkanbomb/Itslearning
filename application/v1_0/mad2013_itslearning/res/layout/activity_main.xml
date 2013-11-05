@@ -24,6 +24,7 @@
         android:layout_gravity="center"
         android:text="Loading feed" />
 
+    
     <ExpandableListView
         android:id="@+id/lvExp"
         android:layout_width="match_parent"

@@ -157,7 +157,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			 *  return the complete list of articles to the listener
 			 *  when all items in the feed queue are processed
 			 */
-			Log.e(TAG, "feedmanager done: " + this.articleList.size());
+			Log.e(TAG, "downloading complete, # articles: " + this.articleList.size());
 
 			callbackHandler.onFeedManagerDone(this, getArticles());
 		}
@@ -215,8 +215,9 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadCache()
-	{
+	public boolean loadCache()
+	{		
+		boolean returnValue = false; 
 		/*
 		 *  check for cache file
 		 */
@@ -232,6 +233,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 				articleList.clear();
 				articleList.addAll((List<Article>) ois.readObject());
 				fis.close();
+				returnValue = true;
 			}
 			catch (Exception e)
 			{
@@ -243,6 +245,16 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 				deleteCache();
 			}
 		}
+		
+		/*
+		 *  return the complete list of articles to the listener
+		 *  when all items in the feed queue are processed
+		 */
+		Log.e(TAG, "load from cache done: " + this.articleList.size());
+
+		callbackHandler.onFeedManagerDone(this, getArticles());
+		
+		return returnValue;
 	}
 
 	public void deleteCache()

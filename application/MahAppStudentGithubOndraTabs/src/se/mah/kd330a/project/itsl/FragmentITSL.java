@@ -94,7 +94,8 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 	public void onPause()
 	{
 		super.onPause();
-		
+		ActionBar actionBarDummy = getActivity().getActionBar();
+		actionBarDummy.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		Log.i(TAG, "Paused: Setting up background updates");
 
 		AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -162,6 +163,7 @@ public class FragmentITSL extends Fragment implements FeedManagerDoneListener, O
 				});
 
 		// For each of the sections in the app, add a tab to the action bar.
+		actionBar.removeAllTabs();
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements

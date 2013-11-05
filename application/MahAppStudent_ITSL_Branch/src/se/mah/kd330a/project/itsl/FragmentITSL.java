@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -23,30 +24,68 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
 import android.app.FragmentTransaction;
 
-public class FragmentITSL extends Fragment implements FeedManager.FeedManagerDoneListener, OnChildClickListener, OnClickListener
+public class FragmentITSL extends Fragment implements 
+	FeedManager.FeedManagerDoneListener, 
+	OnClickListener,
+	ActionBar.TabListener
 {
 	private static final String TAG = "FragmentITSL";
 	private static final long UPDATE_INTERVAL = 30000; //every other minute
-	FeedManager feedManager;
-	ProgressDialog dialog;
-	PendingIntent backgroundUpdateIntent;
-	ArrayList<TabFragment> tabFragments;
-	ViewPager mViewPager;
-	ListPagerAdapter listPagerAdapter;
-
+	private ActionBar actionBar;
+	private FeedManager feedManager;
+	private ProgressDialog dialog;
+	private PendingIntent backgroundUpdateIntent;
+	private ViewPager mViewPager;
+	private ListPagerAdapter listPagerAdapter;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
 		/*
-		 * set up the repeating task of updating data in the background 
-		 * (but stop it while the app is running)
+		 * Set up tabs in the actionbar
+		 */
+		actionBar = getActivity().getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
+		/*
+		 * Set up the repeating task of updating data in the background 
 		 */
 		Context appContext = getActivity().getApplicationContext();
 		backgroundUpdateIntent = PendingIntent.getService(appContext, 0, new Intent(appContext, TimeAlarm.class), 0);
 
 		feedManager = new FeedManager(this, appContext);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_screen_itsl, container, false);
+		
+		mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
+		mViewPager.setOnPageChangeListener(
+	            new ViewPager.SimpleOnPageChangeListener() {
+	                @Override
+	                public void onPageSelected(int position) {
+	                    getActivity().getActionBar().setSelectedNavigationItem(position);
+	                }
+	            });
+		
+		for (String url : Util.getBrowserBookmarks(getActivity().getApplicationContext()))
+		{
+			Log.i(TAG, "Got URL from bookmarks: " + url);
+			feedManager.addFeedURL(url);
+		}
+
+		/*
+		 *  In case there is nothing in the cache, or it doesn't exist
+		 *  we have to refresh
+		 */
+		if (!feedManager.loadCache())
+			refresh();
+		
+		return rootView;
 	}
 
 	public void onPause()
@@ -76,99 +115,6 @@ public class FragmentITSL extends Fragment implements FeedManager.FeedManagerDon
 
 		AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 		alarm.cancel(backgroundUpdateIntent);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_screen_itsl, container, false);
-
-		for (String url : Util.getBrowserBookmarks(getActivity().getApplicationContext()))
-		{
-			Log.i(TAG, "Got URL from bookmarks: " + url);
-			feedManager.addFeedURL(url);
-		}
-
-		/*
-		 *  in case there is nothing in the cache, or it doesn't exist
-		 *  we have to refresh
-		 */
-		if (!feedManager.loadCache())
-			refresh();
-
-		/*
-		 * Set up tabs.
-		 */
-		tabFragments = new ArrayList<TabFragment>();
-
-		ActionBar actionBar = getActivity().getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		listPagerAdapter = new ListPagerAdapter(getActivity().getSupportFragmentManager(), tabFragments);
-		mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
-		mViewPager.setAdapter(listPagerAdapter);
-		mViewPager.setOnPageChangeListener(
-	            new ViewPager.SimpleOnPageChangeListener() {
-	                @Override
-	                public void onPageSelected(int position) {
-	                    /*
-	                     *  When swiping between pages, select the corresponding tab.
-	                     */
-	                    getActivity().getActionBar().setSelectedNavigationItem(position);
-	                }
-	            });
-		/* 
-		 *  Create a tab listener that is called when the user changes tabs.
-		 */
-		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
-			{
-				/*
-				 *  here we retrieve the tabfragment object that should already have 
-				 *  been initialized and added to the adapter
-				 */
-				mViewPager.setCurrentItem(tab.getPosition());
-			}
-
-			public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)
-			{
-				// hide the given tab
-			}
-
-			public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft)
-			{
-				// probably ignore this event
-			}
-		};
-
-		/*
-		 * The first tab contains everything unfiltered
-		 */
-		actionBar.addTab(
-				actionBar.newTab()
-				.setText("All")
-				.setTabListener(tabListener));
-		tabFragments.add(new TabFragment(feedManager.getArticles()));
-
-		/*
-		 * For as many feeds we have downloaded, create a new tab and add the 
-		 * corresponding data to a new TabFragment
-		 */
-		HashMap<String, FeedObject> foList = getFeedObjects();
-
-		for (String title : foList.keySet())
-		{
-			actionBar.addTab(
-					actionBar.newTab()
-					.setText(title)
-					.setTabListener(tabListener));
-			
-			tabFragments.add(new TabFragment(foList.get(title).articles));
-			
-			Log.i(TAG, "Filter list has key: " + title);
-		}
-
-		listPagerAdapter.notifyDataSetChanged();
-		return rootView;
 	}
 
 	public class FeedObject
@@ -205,9 +151,41 @@ public class FragmentITSL extends Fragment implements FeedManager.FeedManagerDon
 		return foList;
 	}
 
-	private void createTabs()
+	private ArrayList<TabFragment> createFragments()
 	{
+		ArrayList<TabFragment> fragments = new ArrayList<TabFragment>();
 		
+		actionBar.removeAllTabs();
+		
+		/*
+		 * The first tab contains everything unfiltered
+		 */
+		actionBar.addTab(
+				actionBar.newTab()
+				.setText("All")
+				.setTabListener(this));
+		
+		fragments.add(new TabFragment(feedManager.getArticles()));
+
+		/*
+		 * For all feeds we have downloaded, create a new tab and add the 
+		 * corresponding data to a new TabFragment
+		 */
+		HashMap<String, FeedObject> foList = getFeedObjects();
+
+		for (String title : foList.keySet())
+		{
+			actionBar.addTab(
+					actionBar.newTab()
+					.setText(title)
+					.setTabListener(this));
+			
+			fragments.add(new TabFragment(foList.get(title).articles));
+			
+			Log.i(TAG, "Filtered map key => tab title is: " + title);
+		}
+
+		return fragments;
 	}
 	
 	public void onFeedManagerProgress(FeedManager fm, int progress, int max)
@@ -230,17 +208,14 @@ public class FragmentITSL extends Fragment implements FeedManager.FeedManagerDon
 	@Override
 	public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles)
 	{
-		/*
-		 * display the data in our listview
-		 */
-
-		// call refresh on each tabfragment
-		
 		if (dialog != null)
 		{
 			dialog.dismiss();
 			dialog = null;
 		}
+
+		listPagerAdapter = new ListPagerAdapter(getActivity().getSupportFragmentManager(), createFragments());
+		mViewPager.setAdapter(listPagerAdapter);
 		
 		Toast.makeText(getActivity(), "" + articles.size() + " articles", Toast.LENGTH_LONG).show();
 	}
@@ -249,12 +224,6 @@ public class FragmentITSL extends Fragment implements FeedManager.FeedManagerDon
 	{
 		feedManager.reset();
 		feedManager.processFeeds();
-	}
-
-	@Override
-	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
-	{
-		return parent.collapseGroup(groupPosition);
 	}
 
 	@Override
@@ -270,5 +239,29 @@ public class FragmentITSL extends Fragment implements FeedManager.FeedManagerDon
 			//listAdapter.notifyDataSetInvalidated();
 			break;
 		}
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft)
+	{
+		/*
+		 *  here we retrieve the tabfragment object that should already have 
+		 *  been initialized and added to the adapter
+		 */
+		mViewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

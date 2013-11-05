@@ -157,7 +157,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 			 *  return the complete list of articles to the listener
 			 *  when all items in the feed queue are processed
 			 */
-			Log.e(TAG, "downloading complete, # articles: " + this.articleList.size());
+			Log.i(TAG, "downloading complete, # articles: " + this.articleList.size());
 
 			callbackHandler.onFeedManagerDone(this, getArticles());
 		}
@@ -250,7 +250,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 		 *  return the complete list of articles to the listener
 		 *  when all items in the feed queue are processed
 		 */
-		Log.e(TAG, "load from cache done: " + this.articleList.size());
+		Log.i(TAG, "load from cache done: " + this.articleList.size());
 
 		callbackHandler.onFeedManagerDone(this, getArticles());
 		
@@ -259,7 +259,7 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 
 	public void deleteCache()
 	{
-		Log.i(TAG, "Deleting file: " + appContext.getFileStreamPath(CACHE_FILENAME).toString());
+		Log.e(TAG, "Deleting file: " + appContext.getFileStreamPath(CACHE_FILENAME).toString());
 		appContext.getFileStreamPath(CACHE_FILENAME).delete();
 	}
 }

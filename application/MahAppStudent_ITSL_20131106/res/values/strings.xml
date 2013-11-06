@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Malmö Högskola</string>
+
+    <string-array name="menu_texts">
+        <item>Home</item>
+        <item>My Schedule</item>
+        <item>Its learning</item>
+        <item>Find on campus</item>
+        <item>Me and MU</item>
+        <item>About this app</item>
+    </string-array>
+    <string-array name="menu_icons">
+        <item>@drawable/ic_menu_home</item>
+        <item>@drawable/ic_menu_schedule</item>
+        <item>@drawable/ic_menu_itsl2</item>
+        <item>@drawable/ic_menu_find</item>
+        <item>@drawable/ic_menu_faq</item>
+        <item>@drawable/ic_menu_help</item>
+    </string-array>
+    
+    <string-array name="menu_colors">
+        <item>@drawable/menuitem_1</item>
+        <item>@drawable/menuitem_2</item>
+        <item>@drawable/menuitem_3</item>
+        <item>@drawable/menuitem_4</item>
+        <item>@drawable/menuitem_5</item>
+        <item>@drawable/menuitem_6</item>
+    </string-array>
+
+    <string-array name="faqOptions">
+        <item>"IT Support"</item>
+        <item>"Housing in Malmo"</item>
+        <item>"Student Service"</item>
+        <item>"Career Service"</item>
+        <item>"New Student"</item>
+    </string-array>
+    <string-array name="faqSubOptions">
+        <item>"it support help text"</item>
+        <item>"Housing help text"</item>
+        <item>"Student Service help text"</item>
+        <item>"Carrer Service help text"</item>
+        <item>"New student help text"</item>
+    </string-array>
+    <string-array name="itSupportOptions">
+        <item>"ID-Service"</item>
+        <item>"Printing And Copying"</item>
+        <item>"WiFi"</item>
+    </string-array>
+    <string-array name="housingOptions">
+        <item>"Student Housing"</item>
+        <item>"Rental Housing"</item>
+    </string-array>
+    <string-array name="studentOptions">
+        <item>"Student Service"</item>
+    </string-array>
+    <string-array name="careerOptions">
+        <item>"Career Workshop"</item>
+        <item>"Job Coaching"</item>
+        <item>"Avalible Jobs"</item>
+    </string-array>
+    <string-array name="newStudentOptions">
+        <item>"Faculty of Health and Society"</item>
+        <item>"Faculty of Culture and Society"</item>
+        <item>"Faculty of Education and Society"</item>
+        <item>"Faculty of Odontology"</item>
+        <item>"Faculty of Technology and Society"</item>
+    </string-array>
+    <string-array name="html_links_it">
+        <item>"https://idservice.mah.se/default.aspx"</item>
+        <item>"http://www.mah.se/english/Student/Student-services/It-support/Programmes-and-Services/Printing-and-copying/"</item>
+        <item>"http://www.mah.se/english/Student/Student-services/It-support/Programmes-and-Services/Wireless-Network/"</item>
+    </string-array>
+    <string-array name="student_housing">
+        <item>http://www.mah.se/english/Student/Housing/Student-Housing/</item>
+        <item>http://www.mah.se/english/Student/Housing/Housing-in-Malmo/</item>
+    </string-array>
+    <string-array name="student_service">
+        <item>http://www.mah.se/english/Student/Student-services/</item>
+    </string-array>
+    <string-array name="career_service">
+        <item>http://www.mah.se/english/Student/Karriar/Karriarworkshops/</item>
+        <item>http://www.mah.se/english/Student/Karriar/Job-Coaching/</item>
+        <item>http://www.mah.se/english/Student/Karriar/Available-jobs/</item>
+    </string-array>
+    <string-array name="new_student">
+        <item>http://www.mah.se/english/Schools-and-faculties/Faculty-of-Health-and-Society/</item>
+        <item>http://www.mah.se/english/Schools-and-faculties/Faculty-of-Culture-and-Society/Current-Student/Welcome-to-the-Faculty-of-Culture-and-Society/</item>
+        <item>http://www.mah.se/english/Schools-and-faculties/Faculty-of-education-and-society/Welcome-to-the-Facutly-of-Education-and-Society/</item>
+        <item>http://www.mah.se/english/Schools-and-faculties/Faculty-of-Odontology/</item>
+        <item>http://www.mah.se/english/Schools-and-faculties/Faculty-of-Technology-and-Society/</item>
+        <item></item>
+    </string-array>
+    <string-array name="faq_drawables">
+        <item>@drawable/itsupport_lager</item>
+        <item>@drawable/housing</item>
+        <item>@drawable/studentservice</item>
+        <item>@drawable/careerservice</item>
+        <item>@drawable/newstudent</item>
+    </string-array>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_help">Help</string>
+    <string name="lorem_ipsum"><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et magna ut erat elementum cursus in quis ipsum. Nam faucibus ultrices eros, vel tempor leo semper sit amet. Duis magna quam, congue vitae interdum nec, condimentum ut lectus. Sed commodo venenatis eros a dignissim. Nunc adipiscing turpis nec magna venenatis at ultricies ipsum bibendum. Sed volutpat urna quis nisi vulputate egestas. Etiam eu dui a enim lacinia dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.]]></string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello settings</string>
+    <string name="next_class_widget_heading">My next lesson</string>
+    <string name="itsl_widget_heading">It´s Learning</string>
+    <string name="news_widget_heading">News from MAH</string>
+    <string name="fultext">Imorgon träffas vi i B130 istället för det vanliga klassrummet. Glöm inte att ta med era skisser...</string>
+    <string name="fultitle">Från: Project Management</string>
+    <string name="fuldate">Placeholder</string>
+    <string name="home_block_description">Image of Malmö Högskola</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="my_courses_heading">My Courses</string>
+    <string name="my_profile_heading">My Profile</string>
+
+    <!-- The label for use as a searchable item -->
+    <string name="search_label">Dictionary</string>
+
+    <!-- The hint text that appears in the search box. -->
+    <string name="search_hint">Search for a course</string>
+
+    <!-- The menu entry that invokes search. -->
+    <string name="menu_search">Search</string>
+
+    <!-- The description that will show up in the search settings for this source. -->
+    <string name="settings_description">Definitions of words</string>
+
+    <!-- General instructions in the main activity. -->
+    <string name="search_instructions">Use the search box in the Action Bar to find your course</string>
+
+    <!-- Shown above search results when we receive a search request. -->
+    <plurals name="search_results">
+        <item quantity="one">%1$d result for \"%2$s\": </item>
+        <item quantity="other">%1$d results for \"%2$s\": </item>
+    </plurals>
+
+    <!-- Search failure message. -->
+    <string name="no_results">No results found for \"%s\"</string>
+    <string name="title_activity_ad_ladok_test">AdLadokTest</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="datenumber">14 Oct</string>
+    <string name="year">2013</string>
+    <string name="date2">15 Oct, 2013</string>
+    <string name="starttime">08:00</string>
+    <string name="endtime">10:00</string>
+    <string name="coursename">Mobile Application Development, 15hp</string>
+    <string name="roomcode">C110</string>
+    <string name="starttime2">10:00</string>
+    <string name="endtime2">12:00</string>
+    <string name="coursename2">Visual Communication, 15hp</string>
+    <string name="roomcode2">U419</string>
+    <string name="starttime3">13:00</string>
+    <string name="endtime3">15:00</string>
+    <string name="coursename3">Programming 4, 15hp</string>
+    <string name="roomcode3">C310</string>
+    <string name="week">Week:</string>
+    <string name="weeknumber">42</string>
+    <string name="weekdaytitle">Day:</string>
+    <string name="dayname">Monday</string>
+    <string name="course">Course:</string>
+    <string name="signtitle">Teachers:</string>
+    <string name="sign">K3LARA</string>
+    <string name="momenttitle">Moment:</string>
+    <string name="moment">Fredrik Ramsten, Senior Designer at Mobile Communcation will talk about his ence working within the mobile industry and he will also give feedback.</string>
+    <string name="roomtitle">Room:</string>
+    <string name="dash">-</string>
+    <string name="title_activity_second_main">Malmö Högskola</string>
+    <string name="now">Now</string>
+    <string name="coma">,</string>
+    <string name="title_activity_test_get_image">TestGetImageActivity</string>
+    <string name="logo_description">Logo of Malmö Högskola</string>
+
+</resources>

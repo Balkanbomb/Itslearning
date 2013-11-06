@@ -102,7 +102,7 @@ public class Me implements Serializable{
 	public static void addCourse(Course course) {
 		//Here check if it exist already then update it............
 		//Set Colors on courses first
-		switch (Me.myCourses.size()) {
+	/*	switch (Me.myCourses.size()) {
 		case 0:
 			course.setColor(R.color.blue);
 			break;
@@ -120,7 +120,7 @@ public class Me implements Serializable{
 			break;
 		default:
 			break;
-		}
+		} */
 		Me.myCourses.add(course);
 		
 	}

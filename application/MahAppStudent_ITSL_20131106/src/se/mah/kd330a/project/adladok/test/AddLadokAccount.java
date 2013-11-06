@@ -73,6 +73,7 @@ public class AddLadokAccount extends Activity implements Observer {
 		
 		String courses = "";
 		Log.i("UserInfo", "Length: " + Me.getCourses().size());
+		int i = 0;
 		for (Course c : Me.getCourses()) {
 			courses = courses + "course: \n" + "NameSV: "
 					+ c.getDisplaynameSv() + "\n" + "NameEN: "
@@ -81,6 +82,27 @@ public class AddLadokAccount extends Activity implements Observer {
 					+ "\n" + "Term: " + c.getTerm() + "\n" + "regCode: "
 					+ c.getRegCode() + "\n" + "KronoxCodeString: "
 					+ c.getKronoxCalendarCode() + "\n";
+			
+			switch (i) {
+			case 0:
+				c.setColor(this.getResources().getColor(R.color.blue));
+				break;
+			case 1:
+				c.setColor(this.getResources().getColor(R.color.orange));
+				break;
+			case 2:
+				c.setColor(this.getResources().getColor(R.color.yellow));
+				break;
+			case 3:
+				c.setColor(this.getResources().getColor(R.color.green));
+				break;
+			case 4:
+				c.setColor(this.getResources().getColor(R.color.grey));
+				break;
+			default:
+				break;
+			}	
+			i++;
 		}
 
 		

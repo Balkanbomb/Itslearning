@@ -37,18 +37,13 @@ public class FragmentITSL extends Fragment implements
 	private PendingIntent backgroundUpdateIntent;
 	private ViewPager mViewPager;
 	private ListPagerAdapter listPagerAdapter;
-	
+	private ViewGroup rootView;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
-		/*
-		 * Set up tabs in the actionbar
-		 */
-		actionBar = getActivity().getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		
 		/*
 		 * Set up the repeating task of updating data in the background 
 		 */
@@ -61,17 +56,9 @@ public class FragmentITSL extends Fragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_screen_itsl, container, false);
-		
-		mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
-		mViewPager.setOnPageChangeListener(
-	            new ViewPager.SimpleOnPageChangeListener() {
-	                @Override
-	                public void onPageSelected(int position) {
-	                    getActivity().getActionBar().setSelectedNavigationItem(position);
-	                }
-	            });
-		
+		rootView = (ViewGroup) inflater.inflate(R.layout.fragment_screen_itsl, container, false);
+		actionBar = getActivity().getActionBar();
+				
 		for (String url : Util.getBrowserBookmarks(getActivity().getApplicationContext()))
 		{
 			Log.i(TAG, "Got URL from bookmarks: " + url);
@@ -84,18 +71,30 @@ public class FragmentITSL extends Fragment implements
 		 */
 		if (!feedManager.loadCache())
 			refresh();
-		
+
 		return rootView;
 	}
 
+	public void onResume()
+	{
+		super.onResume();
+		Log.i(TAG, "Resumed: Stopping background updates");
+		AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+		alarm.cancel(backgroundUpdateIntent);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	}
+	
 	public void onPause()
 	{
 		super.onPause();
-
 		Log.i(TAG, "Paused: Setting up background updates");
-
 		AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 		alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + UPDATE_INTERVAL, UPDATE_INTERVAL, backgroundUpdateIntent);
+		
+		/*
+		 * Removes tabs and everything associated with it.
+		 */
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
 		/*
 		 * Remember when we last had this view opened 
@@ -103,18 +102,7 @@ public class FragmentITSL extends Fragment implements
 		Date date = new Date(System.currentTimeMillis());
 		date.setMonth(9); // zero based index (e.g. 0-11)
 		date.setDate(20);
-
 		Util.setLatestUpdate(getActivity().getApplicationContext(), date);
-	}
-
-	public void onResume()
-	{
-		super.onResume();
-
-		Log.i(TAG, "Resumed: Stopping background updates");
-
-		AlarmManager alarm = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-		alarm.cancel(backgroundUpdateIntent);
 	}
 
 	public class FeedObject
@@ -151,6 +139,11 @@ public class FragmentITSL extends Fragment implements
 		return foList;
 	}
 
+	/**
+	 * Creates tabs in the actionbar and the fragments associated with them.
+	 * 
+	 * @return ArrayList of fragments
+	 */
 	private ArrayList<TabFragment> createFragments()
 	{
 		ArrayList<TabFragment> fragments = new ArrayList<TabFragment>();
@@ -159,13 +152,13 @@ public class FragmentITSL extends Fragment implements
 		
 		/*
 		 * The first tab contains everything unfiltered
-		 */
 		actionBar.addTab(
 				actionBar.newTab()
 				.setText("All")
 				.setTabListener(this));
 		
 		fragments.add(new TabFragment(feedManager.getArticles()));
+		 */
 
 		/*
 		 * For all feeds we have downloaded, create a new tab and add the 
@@ -213,11 +206,26 @@ public class FragmentITSL extends Fragment implements
 			dialog.dismiss();
 			dialog = null;
 		}
+		
+		/*
+		 * Set up tabs in the actionbar
+		 */
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
+		mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
+		mViewPager.setOnPageChangeListener(
+	            new ViewPager.SimpleOnPageChangeListener() {
+	                @Override
+	                public void onPageSelected(int position) {
+	                    actionBar.setSelectedNavigationItem(position);
+	                }
+	            });
+
 
 		listPagerAdapter = new ListPagerAdapter(getActivity().getSupportFragmentManager(), createFragments());
 		mViewPager.setAdapter(listPagerAdapter);
 		
-		Toast.makeText(getActivity(), "" + articles.size() + " articles", Toast.LENGTH_LONG).show();
+		//Toast.makeText(getActivity(), "" + articles.size() + " articles", Toast.LENGTH_LONG).show();
 	}
 
 	private void refresh()
@@ -248,20 +256,17 @@ public class FragmentITSL extends Fragment implements
 		 *  here we retrieve the tabfragment object that should already have 
 		 *  been initialized and added to the adapter
 		 */
-		mViewPager.setCurrentItem(tab.getPosition());
+		if (mViewPager != null)
+			mViewPager.setCurrentItem(tab.getPosition());
 	}
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 }

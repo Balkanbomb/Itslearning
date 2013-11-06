@@ -14,10 +14,9 @@ import android.widget.ExpandableListView.OnChildClickListener;
 public class TabFragment extends Fragment implements OnChildClickListener
 {
 	private static final String TAG = "TabFragment";
-
-	ExpandableListAdapter listAdapter;
-	ExpandableListView expListView;
-	ArrayList<Article> articleList;
+	private ExpandableListAdapter listAdapter;
+	private ExpandableListView expListView;
+	private ArrayList<Article> articleList;
 
 	public TabFragment(ArrayList<Article> articles)
 	{
@@ -38,8 +37,8 @@ public class TabFragment extends Fragment implements OnChildClickListener
 	public void refresh()
 	{
 		/*
-		 * close all expanded childviews, otherwise they will incorrectly 
-		 * linger in the UI even after we invalidate the dataset
+		 * Close all expanded childviews, otherwise they will incorrectly 
+		 * linger in the UI even after we invalidate the dataset.
 		 */
 		int count = listAdapter.getGroupCount();
 		for (int i = 0; i < count; i++)

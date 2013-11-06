@@ -24,7 +24,7 @@ import android.util.Log;
  * FeedCompleteListener when done.
  * 
  * Usage:
- * FeedManager fm = new FeedManager(this, this);
+ * FeedManager fm = new FeedManager(listener, context);
  * fm.addFeedURL(url); // for all urls you want to process, then
  * fm.processFeeds();
  * 
@@ -40,9 +40,6 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	private int feedQueueCounter;
 	private ArrayList<String> feedList;
 		
-	/*
-	 * the listener must implement these methods
-	 */
 	public interface FeedManagerDoneListener
 	{
 		public void onFeedManagerDone(FeedManager fm, ArrayList<Article> articles);
@@ -125,9 +122,6 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 
 		if (feedQueueCounter < feedList.size())
 		{
-			/*
-			 *  process next feed in queue
-			 */
 			processFeeds();
 		}
 		else
@@ -218,14 +212,9 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 	public boolean loadCache()
 	{		
 		boolean returnValue = false; 
-		/*
-		 *  check for cache file
-		 */
+
 		if (appContext.getFileStreamPath(CACHE_FILENAME).exists())
 		{
-			/*
-			 * load data
-			 */
 			try
 			{
 				FileInputStream fis = appContext.openFileInput(CACHE_FILENAME);
@@ -240,7 +229,8 @@ public class FeedManager implements FeedDownloadTask.FeedCompleteListener
 				Log.e(TAG, e.toString());
 
 				/*
-				 *  something is probably wrong with the cache file so let's delete it
+				 *  something is probably wrong with the cache file so 
+				 *  let's delete it
 				 */
 				deleteCache();
 			}

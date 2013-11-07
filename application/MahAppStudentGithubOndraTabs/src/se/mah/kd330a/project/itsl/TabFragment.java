@@ -1,14 +1,17 @@
 package se.mah.kd330a.project.itsl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.ActionBar;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ExpandableListView;
@@ -20,14 +23,17 @@ import android.widget.ExpandableListView.OnChildClickListener;
 
 import se.mah.kd330a.project.R;
 import se.mah.kd330a.project.itsl.*;
+import se.mah.kd330a.project.itsl.FragmentITSL.FeedObject;
 
-public class TabFragment extends FragmentITSL implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener, ActionBar.TabListener {
+public class TabFragment extends FragmentITSL implements FeedManager.FeedManagerDoneListener, OnScrollListener, OnChildClickListener, ActionBar.TabListener{
 	/**
 	 * The fragment argument representing the section number for this
 	 * fragment.
 	 */
 	public static final String ARG_SECTION_NUMBER = "section_number";
+	public static final String ARG_COURSE_KEY = "course_key";
 	static final String TAG = "MainActivity";
+	public HashMap<String, FeedObject> foList2 = new HashMap<String, FeedObject>();
 	
 	
 	ExpandableListAdapter listAdapter;
@@ -37,12 +43,28 @@ public class TabFragment extends FragmentITSL implements FeedManager.FeedManager
 	TextView txProgress;
 	View headerView;
 	PendingIntent backgroundUpdateIntent;
- 
-
-
+	
 	public TabFragment() {
 	}
-
+	@Override
+	public HashMap<String, FeedObject> getFeedObjects() {
+		FeedObject fo = new FeedObject();
+		for (Article a : feedManager.getArticles())
+		{
+			
+			if (foList2.containsKey(a.getArticleCourseCode()))
+			{
+				fo = foList2.get(a.getArticleCourseCode());
+			}
+			else
+			{
+				fo = new FeedObject();
+				foList2.put(a.getArticleCourseCode(), fo);
+			}
+				fo.articles.add(a);
+		}
+		return foList2;
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -50,7 +72,6 @@ public class TabFragment extends FragmentITSL implements FeedManager.FeedManager
 				container, false);
 		//TextView dummyTextView = (TextView) rootView
 		//		.findViewById(R.id.section_label);
-		
 		
 		progBar = (ProgressBar) rootView.findViewById(R.id.progress);
 		txProgress = (TextView) rootView.findViewById(R.id.txProgess);
@@ -66,9 +87,13 @@ public class TabFragment extends FragmentITSL implements FeedManager.FeedManager
         headerView = getLayoutInflater(savedInstanceState).inflate(R.layout.itsl_list_header, null); //possible Error svaeInstanceState
 		hideSettingsView();
 		
-		feedManager = new FeedManager(this, rootView.getContext()); //possible error getAplicationContext() -> getContext()
+		//feedManager = new FeedManager(this, rootView.getContext()); //possible error getAplicationContext() -> getContext()
+		Log.i(TAG, Integer.toString(getArguments().getInt(
+				ARG_SECTION_NUMBER)));
+		Log.i(TAG, getArguments().getString(ARG_COURSE_KEY));
+
+		listAdapter = new ExpandableListAdapter(this.getActivity(), getFeedObjects().get(getArguments().get(ARG_COURSE_KEY)).articles);
 		
-		listAdapter = new ExpandableListAdapter(this.getActivity(), feedManager.getArticles());
 		expListView.addHeaderView(headerView);
 		expListView.setAdapter(listAdapter);
 		expListView.setOnScrollListener(this);
@@ -78,8 +103,9 @@ public class TabFragment extends FragmentITSL implements FeedManager.FeedManager
  
         // setting list adapter
         expListView.setAdapter(listAdapter);
+
  	
-        feedManager.loadCache();
+        
 		
 		/*
 		 *  in case there is nothing in the cache, or it doesn't exist
@@ -197,4 +223,6 @@ public class TabFragment extends FragmentITSL implements FeedManager.FeedManager
 			break;
 		}
 	}
+
+	
 }

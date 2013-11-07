@@ -54,9 +54,30 @@ public class AdLadokTest extends Activity implements Observer{
 		TextView tv = (TextView)findViewById(R.id.tvadladoktest);
 		tv.setMovementMethod(new ScrollingMovementMethod());
 		String courses = "";
-		Log.i("UserInfo","Length: "+Me.getCourses().size());
-		for (Course c : Me.getCourses()) {
-				courses = courses+"course: \n"+
+		Log.i("UserInfo","Length: "+Me.getCourses().size());		
+		int i = 0;
+		for (Course c : Me.getCourses()) {			
+			switch (i) {
+			case 0:
+				c.setColor(this.getResources().getColor(R.color.blue));
+				break;
+			case 1:
+				c.setColor(this.getResources().getColor(R.color.orange));								
+				break;
+			case 2:
+				c.setColor(this.getResources().getColor(R.color.grey));
+				break;
+			case 3:
+				c.setColor(this.getResources().getColor(R.color.green));
+				break;
+			case 4:
+				c.setColor(this.getResources().getColor(R.color.yellow));
+				break;
+			default:
+				break;			
+			}
+			i++;
+			courses = courses+"course: \n"+
 						"NameSV: "+c.getDisplaynameSv()+ "\n"+
 						"NameEN: "+c.getDisplaynameEn()+"\n"+
 						"CourseID: " + c.getCourseID()+"\n"+
